@@ -1,0 +1,811 @@
+<ion-header>
+  <ion-navbar color="primary">
+
+    <img class="header-logo" src="../../assets/img/logo-menu.png">
+
+    <ion-buttons end class="ipadButtons">
+      <button *ngIf="ableDelete && isDeleteable" (click)="deletePartner()" ion-button icon-left [color]="'light'">
+        <ion-icon name="ios-trash-outline"></ion-icon>
+      {{'Delete' | translate}}
+      </button>
+      <button (click)="flush()" *ngIf="isSaveable" ion-button icon-left [color]="'light'">
+        <ion-icon name="md-checkmark"></ion-icon>
+      {{'Save' | translate}}
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end class="phoneButtons">
+      <button *ngIf="ableDelete && isDeleteable" (click)="deletePartner()" ion-button icon-left [color]="'light'">
+        <ion-icon name="ios-trash-outline"></ion-icon>
+      </button>
+      <button (click)="flush()" *ngIf="isSaveable" ion-button icon-only [color]="'light'">
+        <ion-icon name="md-checkmark"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <div class="second-navbar" padding>
+    <p>
+      {{ 'Contacts' | translate }}<span class="current-index"> | {{ current_page_title | translate }}</span>
+    </p>
+    <p class="ipadButtons latest-activity" *ngIf="current_latest_activity != ''">
+      {{ 'LastActivity' | translate }}: <span class="current-index"> {{ current_latest_activity | date: 'dd/MM/yyyy HH:mm' }} </span>
+    </p>
+    <p class="ipadButtons latest-activity" *ngIf="current_latest_activity == ''">
+      <span class="current-index"> {{ 'NoActivities' | translate }} </span>
+    </p>
+  </div>
+
+</ion-header>
+
+
+
+
+
+
+<ion-content padding>
+
+  <div *ngIf="loadingPartner" class="spinner-container">
+    <ion-spinner name="ios"></ion-spinner>
+  </div>
+
+  <ion-list class="outer-list" *ngIf="!loadingPartner">
+    <ion-list-header no-margin color="gris" class="outer-list-header">
+      {{ 'Partner' | translate | uppercase }}
+    </ion-list-header>
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="accountsOpened = !accountsOpened" [class.opened]="accountsOpened">
+        {{'Account' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!accountsOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="accountsOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row center *ngIf="accountsOpened">
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm">
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(partner.CENTRAL.TITLE_KEY,'partner.CENTRAL.TITLE_KEY','currentTitleTreatment','SelectTitle', 'value','text',titleTreatment)"
+                (keyup)="focusNextInput($event, 'nameInput1')">
+                <ion-label floating color="gris">{{'Title' | translate }}</ion-label>
+                <ion-input #titleTreatmentInput readonly formControlName="TITLETREATMENT" [(ngModel)]="currentTitleTreatment.text">
+                </ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm">
+            <ion-list>
+              <ion-item>
+                <ion-label floating [color]="(contactForm.controls.NAME1.errors && contactForm.controls.NAME1.touched) || (partner.CENTRAL_ORGAN.NAME1=='' && contactForm.controls.NAME1.touched) ? 'danger' : 'gris'">{{'InternalName' | translate}} (*)</ion-label>
+                <ion-input #nameInput type="text" required (keyup)="focusNextInput($event, 'nameInput1')" (blur)="onBlur($event)" [(ngModel)]="partner.CENTRAL_ORGAN.NAME1"
+                  formControlName="NAME1"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm">
+            <ion-list>
+              <ion-item>
+                <ion-label floating [color]="(contactForm.controls.NAME2.errors && contactForm.controls.NAME2.touched) || (partner.CENTRAL_ORGAN.NAME2=='' && contactForm.controls.NAME2.touched) ? 'danger' : 'gris'">{{'ExternalName' | translate }} 1 (*)</ion-label>
+                <ion-input #nameInput1 required (keyup)="focusNextInput($event, 'nameInput2')" type="text" (blur)="onBlur($event)" [(ngModel)]="partner.CENTRAL_ORGAN.NAME2"
+                  formControlName="NAME2"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{'ExternalName' | translate }} 2 </ion-label>
+                <ion-input #nameInput2 (keyup)="focusNextInput($event, 'street1')" type="text" [(ngModel)]="partner.CENTRAL_ORGAN.NAME3"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="accountClassificationOpened = !accountClassificationOpened"
+        [class.opened]="accountClassificationOpened">
+        {{'AccountClassification' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!accountClassificationOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="accountClassificationOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="accountClassificationOpened">
+        <ion-col col-12 col-sm-6 *ngIf="existPartner">
+          <div>
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{ 'ClientCode' | translate }}</ion-label>
+                <ion-input disabled="true" type="text" [(ngModel)]="partner.PARTNER"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm">
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(partner.CLASSIFIC.CLASSIFIC,'partner.CLASSIFIC.CLASSIFIC','currentClientType','SelectClientType', 'CLASSIFIC','TEXT',titles)">
+                <ion-label floating [color]="(contactForm.controls.CLIENTTYPE.errors && contactForm.controls.CLIENTTYPE.touched) || (partner.CLASSIFIC.CLASSIFIC=='' && contactForm.controls.CLIENTTYPE.touched) ? 'danger' : 'gris'">{{'ClientClass' | translate }} (*)</ion-label>
+                <ion-input #clientType formControlName="CLIENTTYPE" required readonly [(ngModel)]="currentClientType.TEXT"></ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="addressOpened = !addressOpened" [class.opened]="addressOpened">
+        {{'Address' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!addressOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="addressOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row center *ngIf="addressOpened">
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{ 'Street' | translate}} 1</ion-label>
+                <ion-input #street1 (keyup)="focusNextInput($event, 'street2')" type="text" [(ngModel)]="partner.DATA_ADDRESS.STR_SUPPL1"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{ 'Street' | translate }} 2</ion-label>
+                <ion-input #street2 (keyup)="focusNextInput($event, 'postalCode')" type="text" [(ngModel)]="partner.DATA_ADDRESS.STR_SUPPL2"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm">
+            <ion-list>
+              <ion-item *ngIf="partner.CLASSIFIC.CLASSIFIC != 10">
+                <ion-label floating color="gris">{{ 'PostalCode' | translate }}</ion-label>
+                <ion-input #postalCode formControlName="POSTALCODE" (keyup)="focusNextInput($event, 'city')" type="number" (blur)="onBlur($event)"
+                  [(ngModel)]="partner.DATA_ADDRESS.POSTL_COD1"></ion-input>
+              </ion-item>
+              <ion-item *ngIf="partner.CLASSIFIC.CLASSIFIC == 10">
+                <ion-label floating [color]="contactForm.controls.POSTALCODE.errors && contactForm.controls.POSTALCODE.touched ? 'danger' : 'gris'">{{ 'PostalCode' | translate }}</ion-label>
+                <ion-input #postalCode formControlName="POSTALCODE" (keyup)="focusNextInput($event, 'city')" type="text" (blur)="onBlur($event)"
+                  [(ngModel)]="partner.DATA_ADDRESS.POSTL_COD1"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{ 'City' | translate }}</ion-label>
+                <ion-input #city (keyup)="focusNextInput($event, 'passwordInput')" type="text" [(ngModel)]="partner.DATA_ADDRESS.CITY"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm">
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(partner.DATA_ADDRESS.COUNTRY,'partner.DATA_ADDRESS.COUNTRY','currentCountry','SelectCountry', 'LAND1','LANDX',countries)">
+                <ion-label floating [color]="(contactForm.controls.COUNTRY.errors && contactForm.controls.COUNTRY.touched) || (currentCountry.LANDX=='' && contactForm.controls.COUNTRY.touched) ? 'danger' : 'gris'">{{ 'Country' | translate}} (*)</ion-label>
+                <ion-input #country formControlName="COUNTRY" required readonly [(ngModel)]="currentCountry.LANDX"></ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm" *ngIf="regions != null && regions.length > 0">
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(partner.DATA_ADDRESS.REGION,'partner.DATA_ADDRESS.REGION','currentRegion','SelectRegion', 'BLAND','BEZEI',regions)">
+                <ion-label floating [color]="(contactForm.controls.REGION.errors && contactForm.controls.REGION.touched) || (currentCountry.BLAND=='' && contactForm.controls.REGION.touched) ? 'danger' : 'gris'">{{ 'Region' | translate}}</ion-label>
+                <ion-input #region formControlName="REGION" readonly [(ngModel)]="currentRegion.BEZEI"></ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+
+        <ion-col col-12 class="map-container">
+          <button class="map-button" [disabled]="(partner.GEODATA.LATITUDE == '' || partner.GEODATA.LONGITUDE == '') || (partner.GEODATA.LATITUDE == null || partner.GEODATA.LONGITUDE == null)" ion-button icon-only
+            (click)="openMap()">
+            <img src="assets/img/map.png">
+          </button>
+        </ion-col>
+
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+
+      <ion-list-header color="gris02" class="inner-list-header" (click)="communicationOpened = !communicationOpened" [class.opened]="communicationOpened">
+        {{ 'Communication' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!communicationOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="communicationOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="communicationOpened">
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="contactForm" *ngIf="languages">
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(partner.CENTRAL.PARTNERLANGUAGE,'partner.CENTRAL.PARTNERLANGUAGE','currentLanguage','SelectLanguage','SPRSL', 'SPTXT', languages)">
+                <ion-label floating color="gris">{{ 'Language' | translate}} </ion-label>
+                <ion-input #language formControlName="LANGUAGE" readonly [(ngModel)]="currentLanguage.SPTXT"></ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-list *ngIf="communicationOpened" class="inner-inner-list" id="addPhone">
+        <ion-list-header color="gris01" class="inner-inner-list-header" (click)="addPhone()">
+          {{ 'AddPhone' | translate | uppercase }}
+          <button class="add-button" item-right><ion-icon name="ios-add"></ion-icon></button>
+        </ion-list-header>
+        <ion-row>
+          <ion-col col-12 col-sm-6 *ngFor="let phone of partner.ADTEL;let i = index;">
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{ 'Phone' | translate}} {{i+1}}</ion-label>
+                <ion-input type="number" [(ngModel)]="phone.TELEPHONE"></ion-input>
+                <button class="trash-button" item-right><ion-icon (click)="deleteData(phone,'phone')" name="ios-trash-outline"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+            <ion-item class="subitem">
+              <ion-label floating color="gris">{{ 'Extension' | translate }}:</ion-label>
+              <ion-input [(ngModel)]="phone.EXTENSION" type="number"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+
+      <ion-list *ngIf="communicationOpened" class="inner-inner-list" id="addFax">
+        <ion-list-header color="gris01" class="inner-inner-list-header" (click)="addFax()">
+          {{ 'AddFax' | translate | uppercase }}
+          <button class="add-button" item-right><ion-icon name="ios-add"></ion-icon></button>
+        </ion-list-header>
+        <ion-row>
+          <ion-col col-12 col-sm-6 *ngFor="let fax of partner.ADFAX; let i = index;">
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">Fax {{i+1}}</ion-label>
+                <ion-input type="tel" [(ngModel)]="fax.FAX"></ion-input>
+                <button class="trash-button" item-right><ion-icon (click)="deleteData(fax,'fax')" name="ios-trash-outline"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+
+      <ion-list *ngIf="communicationOpened" class="inner-inner-list" id="addEmail">
+        <ion-list-header color="gris01" class="inner-inner-list-header" (click)="addEmail()">
+          {{ 'AddEmail' | translate | uppercase }}
+          <button class="add-button" item-right><ion-icon name="ios-add"></ion-icon></button>
+        </ion-list-header>
+        <ion-row>
+          <ion-col col-12 col-sm-6 *ngFor="let email of partner.ADSMTP; let i = index;">
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">Email {{i+1}}</ion-label>
+                <ion-input type="email" [(ngModel)]="email.E_MAIL"></ion-input>
+                <button class="trash-button" item-right><ion-icon (click)="deleteData(email,'email')" name="ios-trash-outline"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+
+      <ion-list *ngIf="communicationOpened" class="inner-inner-list" id="addWeb">
+        <ion-list-header color="gris01" class="inner-inner-list-header" (click)="addWeb()">
+          {{ 'AddWeb' | translate | uppercase }}
+          <button class="add-button" item-right><ion-icon name="ios-add"></ion-icon></button>
+        </ion-list-header>
+        <ion-row>
+          <ion-col col-12 col-sm-6 *ngFor="let web of partner.ADURI; let i = index;">
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">Web {{i+1}}</ion-label>
+                <ion-input type="url" [(ngModel)]="web.URI"></ion-input>
+                <button class="trash-button" item-right><ion-icon (click)="deleteData(web,'web')" name="ios-trash-outline"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="hipraSpecificFieldsOpened = !hipraSpecificFieldsOpened"
+        [class.opened]="hipraSpecificFieldsOpened">
+        {{ 'HipraSpecificFields' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!hipraSpecificFieldsOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="hipraSpecificFieldsOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="hipraSpecificFieldsOpened">
+        <ion-col col-12 col-sm-6>
+          <ion-list [formGroup]="contactForm">
+            <ion-item (click)="changeOptionSelected(partner.CENTRAL_CUSTOMER_EXT.ZZZONA,'partner.CENTRAL_CUSTOMER_EXT.ZZZONA','currentZone','SelectZone','DISTRICT','DESCRIPTION',zones)">
+              <ion-label floating [color]="(contactForm.controls.ZONE.errors && contactForm.controls.ZONE.touched) ? 'danger' : 'gris'">{{ 'Zone' | translate }} (*)</ion-label>
+              <ion-input required readonly formControlName="ZONE" [(ngModel)]="currentZone.DESCRIPTION"></ion-input>
+              <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item (click)="changeOptionSelected(partner.CENTRAL_CUSTOMER_EXT.ZZVIC,'partner.CENTRAL_CUSTOMER_EXT.ZZVIC','currentPotencial','SelectPotencial','value','value',potencials)">
+              <ion-label floating color="gris">{{ 'Potential' | translate }}</ion-label>
+              <ion-input readonly [(ngModel)]="currentPotencial.value"></ion-input>
+              <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-item>
+              <ion-label>{{ 'Felicitation' | translate }}</ion-label>
+              <ion-toggle [ngModel]="partner.CENTRAL_CUSTOMER_EXT.ZZFELICITACI == 'X'" (ionChange)="partner.CENTRAL_CUSTOMER_EXT.ZZFELICITACI = $event.checked ? 'X' : ''"></ion-toggle>
+            </ion-item>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-item>
+              <ion-label>{{ 'Gift' | translate }}</ion-label>
+              <ion-toggle [ngModel]="partner.CENTRAL_CUSTOMER_EXT.ZZOBSEQUIO == 'X'" (ionChange)="partner.CENTRAL_CUSTOMER_EXT.ZZOBSEQUIO = $event.checked ? 'X' : ''"></ion-toggle>
+            </ion-item>
+          </div>
+        </ion-col>
+
+      </ion-row>
+
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="speciesOpened = !speciesOpened" [class.opened]="speciesOpened">
+        {{ 'Species' | translate | uppercase }} (*)
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!speciesOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="speciesOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="speciesOpened">
+        <ion-col col-12 col-sm-6 *ngFor="let marketingHeader of currentSpecies">
+          <ion-list>
+            <ion-item>
+              <ion-label floating color="gris">{{ 'Specie' | translate }}</ion-label>
+              <ion-input required readonly [(ngModel)]="marketingHeader.CATCHWORD"></ion-input>
+              <button class="trash-button" item-right><ion-icon name="ios-trash-outline" (click)="deleteSpecie(marketingHeader)"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+          <div *ngFor="let marketingAttribute of marketingAttributes">
+            <ion-item class="subitem" *ngIf="marketingAttribute.CLASS_NUM == marketingHeader.CLASS_NUM">
+              <ion-label class="specie-label" color="gris">{{marketingAttribute.DESCR}}</ion-label>
+              <ion-input class="specie-input" placeholder="_" type="number" [ngModel]="un2Number(getPartnerMarketingAttribute(marketingHeader,marketingAttribute).ATVALUE)"
+                (input)="getPartnerMarketingAttribute(marketingHeader,marketingAttribute).ATVALUE = $event.target.value+' UN'"></ion-input>
+            </ion-item>
+          </div>
+        </ion-col>
+        <ion-col col-12>
+          <div padding class="adder-button">
+            <button ion-button color="gris" outline (click)="addSpecie()">{{ 'AñadirEspecie' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="diagnosticOpened = !diagnosticOpened" [class.opened]="diagnosticOpened">
+        {{ 'Diagnostic' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!diagnosticOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="diagnosticOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="diagnosticOpened">
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item>
+              <ion-label color="gris">{{ 'Client' | translate }}</ion-label>
+              <ion-toggle [ngModel]="partner.CENTRAL_CUSTOMER_EXT.ZZDIAGNOS == 'X'" (ionChange)="partner.CENTRAL_CUSTOMER_EXT.ZZDIAGNOS = $event.checked ? 'X' : ''"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item>
+              <ion-label color="gris">{{ 'Veterinary' | translate }}</ion-label>
+              <ion-toggle [ngModel]="partner.CENTRAL_CUSTOMER_EXT.ZZDIAGNOS_VE == 'X'" (ionChange)="partner.CENTRAL_CUSTOMER_EXT.ZZDIAGNOS_VE = $event.checked ? 'X' : ''"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="webOpened = !webOpened" [class.opened]="webOpened">
+        WEB
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!webOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="webOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="webOpened">
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item>
+              <ion-label floating color="gris">{{ 'UserName' | translate }}</ion-label>
+              <ion-input disabled type="text" [(ngModel)]="partner.CENTRAL_CUSTOMER_EXT.ZZWEBUSR"></ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item>
+              <ion-label floating color="gris">{{ 'Password' | translate }}</ion-label>
+              <ion-input #passwordInput type="text" [(ngModel)]="partner.CENTRAL_CUSTOMER_EXT.ZZWEBPWD"></ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item>
+              <ion-label color="gris">{{ 'HiprasoftAccess' | translate }}</ion-label>
+              <ion-toggle [ngModel]="partner.CENTRAL_CUSTOMER_EXT.ZZHIPRASOFT == 'X'" (ionChange)="partner.CENTRAL_CUSTOMER_EXT.ZZHIPRASOFT = $event.checked ? 'X' : ''"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item>
+              <ion-label color="gris">{{ 'EDiagnosAccess' | translate }}</ion-label>
+              <ion-toggle [ngModel]="partner.CENTRAL_CUSTOMER_EXT.ZZEDIAGN == 'X'" (ionChange)="partner.CENTRAL_CUSTOMER_EXT.ZZEDIAGN = $event.checked ? 'X' : ''"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item>
+              <ion-label color="gris">{{ 'EDiagnosPlusAccess' | translate }}</ion-label>
+              <ion-toggle [ngModel]="partner.CENTRAL_CUSTOMER_EXT.ZZEDIAGNPLUS == 'X'" (ionChange)="partner.CENTRAL_CUSTOMER_EXT.ZZEDIAGNPLUS = $event.checked ? 'X' : ''"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12>
+          <div class="centerButton" padding *ngIf="!partner.ADSMTP">
+            <button disabled="true" ion-button color="gris" outline>{{ 'GenerateUserAndPassword' | translate }}</button>
+          </div>
+        </ion-col>
+
+        <ion-col col-12>
+          <div padding *ngIf="partner.ADSMTP && partner.CENTRAL_CUSTOMER_EXT.ZZWEBUSR == ''" class="adder-button">
+            <button ion-button color="gris" (click)="generarUserPassw()" outline>{{ 'GenerateUserAndPassword' | translate }}</button>
+          </div>
+        </ion-col>
+
+        <ion-col col-12>
+          <div padding *ngIf="partner.CENTRAL_CUSTOMER_EXT.ZZWEBUSR != ''" class="adder-button">
+            <button ion-button color="gris" (click)="generarPassw()" outline>{{ 'GeneratePassword' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="personContactSpecificFieldsOpened = !personContactSpecificFieldsOpened"
+        [class.opened]="personContactSpecificFieldsOpened">
+        {{ 'PersonContactSpecificFields' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!personContactSpecificFieldsOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="personContactSpecificFieldsOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="personContactSpecificFieldsOpened">
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item (click)="changeOptionSelected(partner.CENTRAL_CUSTOMER_EXT.ZZFUNCTION,'partner.CENTRAL_CUSTOMER_EXT.ZZFUNCTION','currentFunction','SelectFunction','PAFKT','BEZ30',functions)">
+              <ion-label floating color="gris">{{'Function' | translate }}</ion-label>
+              <ion-input readonly [(ngModel)]="currentFunction.BEZ30"></ion-input>
+              <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <ion-list>
+            <ion-item (click)="changeOptionSelected(partner.CENTRAL.CONTACTALLOWANCE,'partner.CENTRAL.CONTACTALLOWANCE','currentPermit','SelectPermit','value','text',permisos)">
+              <ion-label floating color="gris">{{'Permit' | translate }}</ion-label>
+              <ion-input readonly [(ngModel)]="currentPermit.text"></ion-input>
+              <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="relationsOpened = !relationsOpened" [class.opened]="relationsOpened">
+        {{ 'Relations' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!relationsOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="relationsOpened"></ion-icon>
+      </ion-list-header>
+
+      <div *ngIf="relationsOpened && loadingRelations > 0" class="spinner-relations">
+        <ion-spinner name="ios"></ion-spinner>
+      </div>
+
+      <ion-row *ngIf="relationsOpened && loadingRelations == 0" id="addRelation">
+        <ion-col col-12 col-sm-6 *ngFor="let relacion of currentRelations; let i=index">
+          <ion-card (click)="editRelation(relacion)">
+            <ion-card-header>
+              <ion-list>
+                <ion-item>
+                  <ion-label floating color="gris">{{'Relation' | translate }}</ion-label>
+                  <ion-input readonly [(ngModel)]="currentRelations[i].BEZ50"></ion-input>
+                  <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();deleteRelation(relacion);" name="ios-trash-outline"></ion-icon></button>
+                </ion-item>
+              </ion-list>
+
+              <ion-item class="subitem">
+                <ion-label floating color="gris">{{'Partner' | translate }}</ion-label>
+                <ion-input readonly [(ngModel)]="currentRelations[i].NAME"></ion-input>
+                <button class="contact-button" item-right><ion-icon (click)="$event.stopPropagation();watchPartner(currentRelations[i].PARTNER2);" name="ios-person-outline"></ion-icon></button>
+              </ion-item>
+
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+        <ion-col col-12>
+          <div padding class="adder-button">
+            <button ion-button color="gris" (click)="editRelation()" outline>{{ 'AddRelation' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="notesOpened = !notesOpened" [class.opened]="notesOpened">
+        {{ 'Notes' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!notesOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="notesOpened"></ion-icon>
+      </ion-list-header>
+      <ion-row *ngIf="notesOpened" id="addNota">
+        <ion-col col-12 *ngFor="let nota of partner.TEXT">
+          <ion-card (click)="editNota(nota)">
+            <div *ngFor="let typeNote of textClass">
+              <div *ngIf="nota.STXH.TDID == typeNote.TDID">
+                <ion-card-header>
+                  <ion-item>
+                    <span class="noteTitle">{{nota.STXH.TDTITLE}}</span>
+                    <button class="trash-button" item-right (click)="$event.stopPropagation();deleteData(nota,'note')"><ion-icon name="ios-trash-outline"></ion-icon></button>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label class="noteType">{{typeNote.TDTEXT}}</ion-label>
+                  </ion-item>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-item>
+                    <!--<ion-textarea class="noteContent" readonly [style.height.px]="(nota.LINES.length - 2)  * 20.8 + 2 * 30" [ngModel]="getLines(nota)"></ion-textarea>-->
+                    <ion-label class="noteContent">{{getLines(nota)}}</ion-label>
+                  </ion-item>
+                </ion-card-content>
+              </div>
+            </div>
+          </ion-card>
+        </ion-col>
+        <ion-col col-12>
+          <div class="adder-button" padding>
+            <button ion-button color="gris" (click)="editNota()" outline>{{ 'AddNota' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list" *ngIf="existPartner">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="latestActivitiesOpened = !latestActivitiesOpened" [class.opened]="latestActivitiesOpened">
+        {{ 'LatestActivities' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!latestActivitiesOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="latestActivitiesOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="latestActivitiesOpened">
+        <ion-card class="activity-card" no-padding no-margin *ngFor="let activity of activities; let i = index" col-12 col-sm-6 col-md-4
+          col-lg-3>
+          <div class="wrapper-color-state-open">
+            <div class="background-card">
+              <div tappable (click)="loadActivity(activity.OBJECT_ID)">
+                <ion-card-content>
+                  <p class="activity-title">{{ activity.DESCRIPTION }}</p>
+                  <p class="activity-operation">{{ getEvento(activity.PROCESS_TYPE) | translate}}</p>
+                  <p class="activity-date">{{ activity.DATE_1 | date: 'dd/MM/yyyy HH:mm'}}</p>
+                  <p class="activity-date">{{ activity.DATE_2 | date: 'dd/MM/yyyy HH:mm'}}</p>
+                  <p class="activity-contact">{{ activity.NAME_FIRST }} {{ activity.NAME_LAST }}</p>
+                </ion-card-content>
+              </div>
+            </div>
+          </div>
+        </ion-card>
+
+        <ion-col col-12>
+          <div class="adder-button" padding>
+            <button ion-button color="gris" (click)="loadNewActivity()" outline>{{ 'NewActivity' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+  </ion-list>
+</ion-content>

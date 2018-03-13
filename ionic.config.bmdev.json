@@ -1,0 +1,11 @@
+{
+  "name": "testhipracrm",
+  "app_id": "",
+  "proxies": [
+    {
+      "path": "/mfp",
+      "proxyUrl": "http://server-mf80-dev.eu-gb.mybluemix.net:80/mfp"
+    }
+  ],
+  "type": "ionic-angular"
+}

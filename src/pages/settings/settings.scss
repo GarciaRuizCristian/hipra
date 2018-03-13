@@ -1,0 +1,60 @@
+.ios, .md{
+    page-settings {
+    
+        ion-header{
+    
+            .header-logo{
+                max-height: 48px;
+                padding-left: 19px;
+            }
+
+            .second-navbar {
+                color: $gris;
+                background-color: $gris01;
+                font-size: 16px;
+        
+                p {
+                    padding: 16px;
+                    padding-right: 0px;
+                    font-family: "Roboto-Medium";
+                    margin: 0px;
+                    background-color: $gris01;
+                }
+            }
+        }
+    
+        ion-content{
+            background-color: $gris02;
+    
+            .outer-list{
+                margin-top: 0px;
+                margin-bottom: 0px;
+                background-color: $gris;
+    
+                .outer-list-header{
+                    padding-left: 15px;
+    
+                    .textSettings{
+                        margin-top: 11px;
+                        margin-bottom: 11px;
+                        padding: 0px;
+                        font-size: 18px;
+                        font-family: "Roboto-Regular";
+                        letter-spacing: 1px;
+                        color: $blanco;                    
+                    }
+                }
+            }
+    
+            .Icon{
+                font-size: 2em;
+                color: #6CC14A;
+            }
+
+            .logout{
+                font-size: 2em;
+                color: red;
+            }
+        }
+    }
+    }

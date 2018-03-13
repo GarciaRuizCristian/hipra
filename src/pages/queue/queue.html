@@ -1,0 +1,87 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+
+        <img class="header-logo" src="../../assets/img/logo-menu.png">
+
+        <ion-buttons end class="ipadButtons">
+            <button class="phoneButtonSpace" ion-button icon-left (click)="refresh()" [color]="tasks.length != 0 ? 'danger' : 'light'">
+                <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+                {{'SendQueue' | translate}}
+            </button>
+            <button ion-button icon-left (click)="clearQueue()">
+                <ion-icon name="trash"></ion-icon>
+                {{'DeleteQueue' | translate}}
+            </button>
+        </ion-buttons>
+
+        <ion-buttons end class="phoneButtons">
+            <button class="phoneButtonSpace" ion-button icon-only (click)="refresh()" [color]="tasks.length != 0 ? 'danger' : 'light'">
+                <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+            </button>
+            <button ion-button icon-only (click)="clearQueue()">
+                <ion-icon name="trash"></ion-icon>
+            </button>
+        </ion-buttons>
+
+    </ion-navbar>
+
+    <ion-row class="second-navbar">
+        <p>
+            {{ 'SendingsQueue' | translate }}
+        </p>
+    </ion-row>
+
+</ion-header>
+
+
+
+<ion-content padding no-bounce>
+
+    <ion-list class="outer-list">
+        <ion-row no-margin color="gris" class="outer-list-header">
+            <ion-col class="textSettings">
+                {{ 'SendingsQueue' | translate | uppercase }}
+                <span class="contacts-number">\({{ tasks.length }}\)</span>
+            </ion-col>
+        </ion-row>
+    </ion-list>
+
+    <ion-row>
+        <ion-card class="activity-card" [class.disabled]="doingSync" no-padding no-margin *ngFor="let task of tasks;let i = index" col-12 col-sm-3>
+            <div class="background-card">
+                <div tappable class="foreground-card" (click)="openTask(task)">
+                    <button icon-only class="buttonSendTask" (click)="$event.stopPropagation();sendTask(task)">
+                        <ion-icon name="ios-send-outline"></ion-icon>
+                    </button>
+                    <button icon-only class="buttonClearTask" (click)="$event.stopPropagation();clearTask(task)">
+                        <ion-icon name="ios-close"></ion-icon>
+                    </button>
+                    <ion-card-content *ngIf="getType(task) == 'Partner'">
+                        <p class="task-type">{{ getType(task) | translate | uppercase }}</p>
+                        <p class="task-title">{{ task.data[0].CENTRAL_ORGAN.NAME1 }}</p>
+                        <p class="task-error">{{ getError(task) | translate | uppercase }}</p>
+                    </ion-card-content>
+                    <ion-card-content *ngIf="getType(task) == 'Activity'">
+                        <p class="task-type">{{ getType(task) | translate | uppercase }}</p>
+                        <p class="task-title">{{ task.data[0].HEADER.DESCRIPTION }}</p>
+                        <p class="task-error">{{ getError(task) | translate | uppercase }}</p>
+                    </ion-card-content>
+                    <ion-card-content *ngIf="getType(task) == 'SalesOrd'">
+                        <p class="task-type">{{ getType(task) | translate | uppercase }}</p>
+                        <p class="task-title">{{ task.data[0].HEADER.OBJECT_ID }}</p>
+                        <p class="task-error">{{ getError(task) | translate | uppercase }}</p>
+                    </ion-card-content>
+                    <ion-card-content *ngIf="getType(task) == 'Opportunity'">
+                        <p class="task-type">{{ getType(task) | translate | uppercase }}</p>
+                        <p class="task-title">{{ task.data[0].HEADER.OBJECT_ID }}</p>
+                        <p class="task-error">{{ getError(task) | translate | uppercase }}</p>
+                    </ion-card-content>
+                </div>
+            </div>
+        </ion-card>
+    </ion-row>
+
+</ion-content>

@@ -1,0 +1,245 @@
+.ios {
+page-contacts {
+
+    ion-header {
+
+        .header-logo {
+            max-height: 48px;
+            padding-left: 19px;
+        }
+
+        .second-navbar {
+            color: $gris;
+            background-color: $gris01;
+            font-size: 16px;
+
+            .contacts-tittle {
+                padding: 16px;
+                padding-right: 0px;
+                font-family: "Roboto-Medium";
+                margin: 0px;
+                margin-top: auto;
+                margin-bottom: auto;
+                background-color: $gris01;
+
+                .contacts-number{
+                    color: $verde;
+                }
+            }
+        }
+
+        @media(max-width:639px) {
+            .bigScreenButtons{
+                visibility: hidden;
+                display: none;
+            }
+        }
+
+        @media(min-width:640px) {
+            .smallScreenButtons{
+                visibility: hidden;
+                display: none;
+            }
+        }  
+    }
+
+    ion-content {
+        background-color: $gris02;
+
+        .outer-list {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            background-color: $gris;
+
+            .outer-list-header {
+                padding-left: 15px;
+
+                .textPartners {
+                    margin-top: 11px;
+                    margin-bottom: 11px;
+                    padding: 0px;
+                    font-size: 18px;
+                    font-family: "Roboto-Regular";
+                    letter-spacing: 1px;
+                    color: $blanco;                    
+                }
+
+                .current-page-partners {
+                    margin-top: auto;
+                    margin-bottom: auto;
+                    text-align: right;
+                    font-size: 18px;
+                    color: $verde;
+                    font-family: "Roboto-Regular";
+                }
+                .scroll-partners {
+                    padding: 1px 5px 1px 5px;
+
+                    ion-range {
+                        padding: 0px;
+                        margin-right: 5px;
+                    }
+                }
+
+                .white-arrow {
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    color: $blanco;
+                }
+
+                .grey-arrow {
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    color: $gris;
+                }
+            } 
+        }
+
+        ion-card {
+            border-radius: 4px;
+
+            >ion-card-content {
+                padding: 4px;
+            }
+
+            ion-card {
+                border-radius: 5px;
+            }
+
+            .background-card {
+                background-color: white;
+                margin: 0px;
+                margin-left: 7px;
+                min-height: 83px;
+                height: 100%;
+                width: 100%;
+            }
+
+            .no-contacts {
+                font-family: "Roboto-Regular";
+                font-size: 18px;
+                color: $gris;
+                padding-top: 15px; 
+                margin: 10px auto auto auto;
+            }
+
+            .card-wrapper {
+                box-sizing: border-box;
+                border-left: 7px solid color($colors, dark);
+                border-right: 1px solid;
+                position: relative;
+            }
+
+            .card-title {
+                font-weight: bold;
+                white-space: initial;
+            }
+
+            .card-text {
+                white-space: nowrap;
+                width: 95%;
+                overflow: hidden;
+            }
+
+            .wrapper-color-state-danger {
+                box-sizing: border-box;
+                border-left: 7px solid color($colors, danger);
+                border-right: 1px solid;
+            }
+
+            .icon-phone {
+                float: right;
+                margin-right: 8px;
+                color: color($colors, primary);
+            }
+
+            .icon-phone:hover {
+                color: color($colors, primary);
+            }
+        
+            .icon-phone-disabled {
+                float: right;
+                margin-right: 8px;
+                color: color($colors, secondary);
+            }
+
+            .icon-phone-disabled:hover {
+                color: color($colors, secondary);
+            }
+
+            .card {
+                margin: 1px 0px 1px 0px;
+            }
+
+            .card-ios {
+                width: 100%;
+                min-height: 105px;
+            }
+
+            .wrapper-telephone {
+                height: 26px;
+            }
+
+            .label-ios {
+                margin: 0;
+            }
+        }
+
+        .spinner-container {
+            padding-top: 40px;
+            text-align: center;
+
+            ion-spinner * {
+                width: 40px;
+                height: 40px;
+                stroke: #444;
+                fill: #222;
+            }
+
+            #spinner-animated-text {
+                color: $gris;
+                font-family: 'Roboto-Regular';
+                margin-top: 30px;
+                /* Safari 4.0 - 8.0 */
+                -webkit-animation-name: example;
+                -webkit-animation-duration: 3s;
+                -webkit-animation-timing-function: linear;
+                -webkit-animation-iteration-count: infinite;
+                -webkit-animation-direction: alternate;
+                /* Standard syntax */
+                animation-name: example;
+                animation-duration: 3s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+            /* Safari 4.0 - 8.0 */
+            @-webkit-keyframes example {
+                0%   {opacity:1;}
+                50% {opacity:0.2;}
+            }
+            /* Standard syntax */
+            @keyframes example {
+                0%   {opacity:1;}
+                50% {opacity:0.2;}
+            }
+        }
+    }
+
+    ::-webkit-scrollbar{      
+        border-radius: 55px;
+        width:1%;
+    }
+
+    ::-webkit-scrollbar-thumb{
+        border-radius: 55px;
+        border: none;
+    }
+
+    .background-card{
+        width: 100%;
+        min-height: 83px;
+        margin: 0px;
+    }
+}
+}

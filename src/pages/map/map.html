@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle start>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <img class="header-logo" src="../../assets/img/logo-menu.png">
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content>
+  <div *ngIf="!hasBeenLoaded" class="spinner-container">
+    <ion-spinner name="ios"></ion-spinner>
+  </div>
+  <div #map id="map"></div> 
+</ion-content>

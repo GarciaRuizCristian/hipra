@@ -1,0 +1,12 @@
+<ion-item>
+ <ion-label>{{optionSelected[label]}} </ion-label>   
+<ion-icon tappable class="Icon" name="md-swap" (click)="openModal()" item-right></ion-icon>  
+</ion-item>
+
+
+<!--
+<ion-item [ngClass]="required && submitAttempt && !optionSelected[label] ? 'ng-invalid ng-touched' : ''">
+  <ion-label stacked>{{title}}</ion-label>
+  <ion-input class="borderInput" type="text" [value]="optionSelected[label]" readonly (focus)="openModal()"></ion-input>
+</ion-item>
+-->

@@ -1,0 +1,433 @@
+.ios, .md{
+page-orders {
+    ion-header{
+        .header-logo{
+            max-height: 48px;
+            padding-left: 19px;
+        }
+
+        @media(max-width:639px) {
+            .ipadButtons{
+                visibility: hidden;
+                display: none;
+            }
+        }
+
+        @media(min-width:640px) {
+            .phoneButtons{
+                visibility: hidden;
+                display: none;
+            }
+        }
+
+        .second-navbar{
+            color: $gris;
+            background-color: $gris01;
+            font-size: 16px;
+
+            div{
+                padding: 0px;
+            }
+        
+            p{
+                padding: 16px;
+                padding-right: 0px;
+                font-family: "Roboto-Medium";
+                margin: 0px;
+                background-color: $gris01;
+
+                .order-number{
+                    color: $verde;
+                }
+            }
+
+            .iconFilterType, .orderType{
+                cursor: pointer;
+            }
+
+            @media(min-width:768px) {
+                height: 51px;
+        
+                .orderType{
+                    float: right;
+                    text-align: right;
+                    padding-top: 14px;
+                    padding-bottom: 12px;
+                    padding-left: 0px;
+                    padding-right: 15px;
+                }
+                .filterType{
+                    text-align: right;
+                    padding: 12px;
+                    padding-left: 0px;
+                    display: inline-block;
+                    font-size: 1.3em;                    
+
+                    .secondary{
+                        color: #6CC14A !important;
+                    }
+                }
+            }
+        
+            @media(max-width:767px) {
+                .navigation-buttons-right-iphone{
+                    float: right;
+                    text-align: right;
+                    padding-right: 15px;
+                }
+        
+                .navigation-buttons-bottom{
+                    padding-top: 0px;
+                    padding-bottom: 10px;
+                    display: inline-block;
+                }
+        
+                .bloqueSuperior{
+                    display: inline-block;
+        
+                    p{
+                        padding-top: 11px;
+                        padding-bottom: 11px;
+                    }
+                }
+        
+                .bloqueInferior{
+                    display: inline-block;
+                    border-style: solid;
+                    border-width: 1px 0px 0px 0px;
+                    border-color: $gris-opacidad60;
+                    padding-top: 10px;
+
+                    .secondary{
+                        color: #6CC14A !important;
+                    }
+                }
+            }
+        
+            @media(max-width: 350px){
+                p{
+                    font-size: 14px;
+
+                    .order-number{
+                        font-size: 14px;
+                    }
+                }
+            }
+            
+            ion-searchbar{
+                border: 0;
+            }
+        }
+    }
+
+
+
+    ion-content{
+        background-color: $gris02;
+
+        .spinner-container{
+            padding-top: 40px;
+            text-align: center;
+
+            ion-spinner * {
+                width: 40px;
+                height: 40px;
+                stroke: #444;
+                fill: #222;
+            }
+
+            #spinner-animated-text{
+                color: $gris;
+                font-family: 'Roboto-Regular';
+                margin-top: 30px;
+                /* Safari 4.0 - 8.0 */
+                -webkit-animation-name: example;
+                -webkit-animation-duration: 3s;
+                -webkit-animation-timing-function: linear;
+                -webkit-animation-iteration-count: infinite;
+                -webkit-animation-direction: alternate;
+                /* Standard syntax */
+                animation-name: example;
+                animation-duration: 3s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+            /* Safari 4.0 - 8.0 */
+            @-webkit-keyframes example {
+                0%   {opacity:1;}
+                50% {opacity:0.2;}
+            }
+            /* Standard syntax */
+            @keyframes example {
+                0%   {opacity:1;}
+                50% {opacity:0.2;}
+            }
+        }
+
+        .outer-list{
+            margin-top: 0px;
+            margin-bottom: 0px;
+            background-color: $gris;
+
+            @media(max-width:767px) {
+                .ipadButtons{
+                    visibility: hidden;
+                    display: none;
+                }
+            }
+        
+            @media(min-width:768px) {
+                .phoneButtons{
+                    visibility: hidden;
+                    display: none;
+                }
+            }
+
+            .outer-list-header{
+                padding-left: 15px;
+
+                .contentTitle{
+                    margin-top: 11px;
+                    margin-bottom: 11px;
+                    padding: 0px;
+                }
+
+                .contentTitle-phone{
+                    margin-top: 11px;
+                    margin-bottom: 9px;
+                    padding: 0px;
+                }
+                .textOrders{
+                    margin-top: 11px;
+                    margin-bottom: 11px;
+                    padding: 0px;
+                    font-size: 18px;
+                    font-family: "Roboto-Regular";
+                    letter-spacing: 1px;
+                    color: $blanco;                    
+                }
+                .current-page-orders{
+                    margin-top: auto;
+                    margin-bottom: auto;
+                    text-align: right;
+                    font-size: 18px;
+                    color: $verde;
+                    font-family: "Roboto-Regular";
+                }
+                .scroll-orders{
+                    padding: 1px 5px 1px 5px;
+                    ion-range{
+                        padding: 0px;
+                        margin-right: 5px;
+                    }
+                }
+
+                .white-arrow{
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    color: $blanco;
+                }
+                .grey-arrow{
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    color: $gris;
+                }
+                //Para iphone
+                .textOrders-phone{
+                    padding: 0px;
+                    margin-top: 11px;
+                    margin-bottom: 9px;
+                    font-family: "Roboto-Regular";
+                    font-size: 18px;
+                    letter-spacing: 1px;
+                    color: $blanco; 
+                }
+                .scroll-orders-phone{
+                    padding: 0px;
+                    
+                    ion-range{
+                        padding: 0px;
+                        margin-right: 10px;
+                        .current-page-orders-phone{
+                            &.vertical{
+                                padding: 0px;
+                            }
+                            &.horizontal{
+                                padding: 5px 0px 5px 0px;
+                            }
+                            text-align: right;
+                            color: $verde;
+                            font-size: 18px;
+                            font-family: "Roboto-Regular";
+                        }
+                    }
+                }
+                .white-arrow-phone{
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    color: $blanco;
+                }
+                .grey-arrow-phone{
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    color: $gris;
+                }
+            }
+        }
+
+        .background-card{
+            width: 100%;
+            height: 100%;
+            min-height: 83px;
+            margin: 0px;
+            background-color: white;
+
+            .no-orders{
+                font-family: "Roboto-Regular";
+                font-size: 18px;
+                color: $gris;
+                text-align: center;
+                padding-top: 15px; 
+                margin: 10px auto auto auto;
+            }
+
+            ion-card-content{
+                border-radius: 4px;
+                padding: 4px;
+
+                ion-card-content {
+                    padding: 12px 0px 14px 16px;
+
+                    //Para iphone
+                    &.card-content-phone {
+                        padding: 5px 0px 10px 16px;
+                    }
+                }
+
+                ion-card{
+                    border-radius: 5px;
+                }
+    
+                ion-card-header {
+                    padding: 16px 16px 14px 16px;
+                    font-weight: bold;
+
+                    //Para iphone
+                    &.card-header-phone {
+                        padding: 13px 16px 14px 16px;
+                        display: flex;
+                    }
+                }
+                
+                .date {
+                    font-size: 10px;
+                    margin-top: 5px;
+                }
+
+                //Para iphone
+                .date-phone {
+                    font-size: 10px;
+                    margin-top: 5px;
+                    margin-right: 0px;
+                    margin-left: auto;
+                    padding-right: 0px;
+                    text-align: right;
+                }
+
+                .wrapper-color-state-open {
+                    box-sizing: border-box;
+                    border-left: 7px solid color($colors, primary);
+                    border-right: 1px solid;
+
+                    &.iphone {
+                        height: 83px;
+                        min-height: 83px;
+                    }
+                }
+                .wrapper-color-state-close {
+                    box-sizing: border-box;
+                    border-left: 7px solid color($colors, secondary);
+                    border-right: 1px solid;
+
+                    &.iphone {
+                        height: 83px;
+                        min-height: 83px;
+                    }
+                }
+                .wrapper-color-state-processing {
+                    box-sizing: border-box;
+                    border-left: 7px solid color($colors, dark);
+                    border-right: 1px solid;
+
+                    &.iphone {
+                        height: 83px;
+                        min-height: 83px;
+                    }
+                }
+                .wrapper-color-state-danger {
+                    box-sizing: border-box;
+                    border-left: 7px solid color($colors, danger);
+                    border-right: 1px solid;
+
+                    &.iphone {
+                        height: 83px;
+                        min-height: 83px;
+                    }
+                }
+                .icon-state-open {
+                    float: right;
+                    color: color($colors, primary);
+                }
+                .icon-state-close {
+                    float: right;
+                    color: color($colors, secondary);
+                }
+                .icon-state-processing {
+                    float: right;
+                    color: color($colors, dark);
+
+                    &.iphone {
+                        margin-left: 0px;
+                        margin-right: 1px;
+                    }
+                }
+                .icon-state-danger {
+                    float: right;
+                    color: color($colors, danger);  
+                }
+            }
+        }
+
+        
+
+        .label-md {
+            margin: 0;
+        }
+    
+        .label-ios {
+            margin: 0;
+        }
+
+        .card {
+            margin: 1px 0px 1px 0px;
+        }
+    
+        .card-md {
+            width: 100%;
+            min-height: 135px;
+        }
+    
+        .card-ios{
+            width: 100%;
+            min-height: 135px;
+        }
+
+        .background-card{
+            width: 100%;
+            min-height: 83px;
+            margin: 0px;
+        }
+    }
+}
+}

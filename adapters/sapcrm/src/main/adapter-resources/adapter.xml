@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Licensed Materials - Property of IBM
+	5725-I43 (C) Copyright IBM Corp. 2011, 2016. All Rights Reserved.
+	US Government Users Restricted Rights - Use, duplication or
+	disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<mfp:adapter name="sapcrm"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:mfp="http://www.ibm.com/mfp/integration"
+			 xmlns:http="http://www.ibm.com/mfp/integration/http">
+
+	<displayName>sapcrm</displayName>
+	<description>sapcrm</description>
+	<connectivity>
+		<connectionPolicy xsi:type="http:HTTPConnectionPolicyType">
+			<protocol>http</protocol>
+			
+			<!-- Test environment from local -->
+ 		    <domain>crmtest.hipra.com</domain>
+		    <port>8001</port>
+
+			<!-- Test environment from bluemix (gateway) -->
+ 		    <!--<domain>caplonsgprd-3.integration.ibmcloud.com</domain>
+		    <port>15627</port>-->
+			
+			<!-- Production environment -->			 	
+<!-- 		<domain>sapcrm.hipra.local</domain> -->
+<!-- 		<port>8003</port> 	 -->
+
+
+			<connectionTimeoutInMilliseconds>120000</connectionTimeoutInMilliseconds>
+			<socketTimeoutInMilliseconds>120000</socketTimeoutInMilliseconds>
+			<maxConcurrentConnectionsPerNode>50</maxConcurrentConnectionsPerNode>
+		</connectionPolicy>
+	</connectivity>
+
+
+	<!-- READY -->
+	<procedure name="login" secured="false"/>
+	
+	<procedure name="secret" secured="true" scope="UserLogin"/>
+
+	<procedure name="getPartners" secured="true" scope="UserLogin"/>
+
+	<procedure name="getList" secured="true" scope="UserLogin"/>
+
+	<procedure name="pushCreatePartner" secured="true" scope="UserLogin"/>
+
+	<procedure name="pushChangePartner" secured="true" scope="UserLogin"/>
+
+
+
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="getPartners_v3" requestTimeoutInSeconds="60"/> -->
+	<procedure name="getPartners_poc_nmm" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+	
+	<procedure name="getActivities" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="getActivities_v3" requestTimeoutInSeconds="60"/> -->
+<!--  -END-  -->
+
+	<procedure name="createRel" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+	<procedure name="deleteRel" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+
+<!-- -LOV Getters-  -->
+<!-- 	<procedure name="getCategories" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getCountries" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getDepartments" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getFICClasses" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getFunctions" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getGroups" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getInterl" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getLanguages" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getMarketingAttributes" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getMarketingHeaders" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getObjectives" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getOperationClasses" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getReasons" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getResult" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getRegions" requestTimeoutInSeconds="60"/> -->
+	<procedure name="getReTypes" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+	<procedure name="getRUser" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="getStatus" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getTextActClasses" requestTimeoutInSeconds="60"/> -->
+<!-- 	<procedure name="getTextClasses" requestTimeoutInSeconds="60"/> -->
+<!--  -END-  -->
+
+<!-- -Partners CRUD operations-  -->
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="createPartner" requestTimeoutInSeconds="60"/> -->
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="changePartner" requestTimeoutInSeconds="60" secured="true" scope="UserLogin"/> -->
+<!--  -END-  -->
+
+<!-- -Activities CRUD operations-  -->
+	<procedure name="pushCreateActivity" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="createActivity" requestTimeoutInSeconds="60" secured="true" scope="UserLogin"/> -->
+	<procedure name="pushChangeActivity" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="changeActivity" requestTimeoutInSeconds="60" secured="true" scope="UserLogin"/> -->
+	<procedure name="pushDeleteActivity" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+<!-- 	<procedure name="deleteActivity" requestTimeoutInSeconds="60" secured="true" scope="UserLogin"/> -->
+<!--  -END-  -->
+	
+	
+
+    <!--requestTimeoutInSeconds="60"-->
+    <procedure name="checkLOVSync" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->	
+<!--  -END-  -->	
+    <procedure name="getUserValues" secured="true" scope="UserLogin"/>
+    <!--requestTimeoutInSeconds="60"-->
+    
+     <procedure name="getProducts" secured="true" scope="UserLogin"/>
+
+
+	<!-- FOR WEBAPP -->
+    <procedure name="getOptimizedPartnersList" secured="true" scope="UserLogin"/>
+    <procedure name="getOptimizedPartner" secured="true" scope="UserLogin"/>
+    
+
+</mfp:adapter>

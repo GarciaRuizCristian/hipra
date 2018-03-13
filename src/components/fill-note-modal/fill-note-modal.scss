@@ -1,0 +1,72 @@
+fill-note-modal {
+
+    .list-ios > .item-block:first-child{
+        border-top: 0px;
+    }
+
+    .list-ios{
+        margin: 0px;
+    }
+
+    .def-item{
+        border-bottom: 0.55px solid #c8c7cc;
+    }
+
+    #noteContent{
+        min-height: 60%;
+  
+
+        ion-textarea{
+            height: 100%;
+            textarea{
+                height: 100%;
+            }
+        }
+
+        border-bottom: 0.55px solid #c8c7cc;
+
+    }
+
+    ion-list{
+          margin: 0px;
+
+          ion-input{
+            font-family: "Roboto-Medium";
+            color:black;
+          }
+
+          .arrow-button{
+            background-color: transparent;
+            font-size: 16px;
+            position: relative;
+            bottom: -15px;
+            right: -10px;
+            color: $gris;
+          }
+
+          .select-arrow-button{
+            background-color: transparent;
+            font-size: 22px;
+            position: relative;
+            bottom: -13px;
+            right: -14px;
+            color: $gris;
+          }
+
+          .trash-button{
+            background-color: transparent;
+            font-size: 24px;
+            position: relative;
+            bottom: 0px;
+            right: -10px;
+            color: $gris;
+          }
+
+          .add-button{
+            background-color: transparent;
+            font-size: 24px;
+            color: $gris;
+          }
+        }
+    
+}

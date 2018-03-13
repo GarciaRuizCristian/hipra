@@ -1,0 +1,374 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <img class="header-logo" src="../../assets/img/logo-menu.png">
+
+    <ion-buttons end class="ipadButtons">
+      <button class="phoneButtonSpace" *ngIf="existActivity && isDuplicateable" ion-button icon-only (click)="duplicateActivity()" [color]="'light'">
+        <ion-icon  name="md-copy" ></ion-icon>
+        {{ 'DuplicateActivity' | translate}}
+      </button>
+      <button class="phoneButtonSpace" *ngIf="existActivity && isDeleteable" (click)="delete()" ion-button icon-left [color]="'light'">
+        <ion-icon name="md-trash" ></ion-icon>
+        {{'Delete' | translate}}
+      </button>
+      <button (click)="flush()" *ngIf="isSaveable" ion-button icon-left [color]="'light'">
+        <ion-icon name="md-checkmark"></ion-icon>
+        {{'Save' | translate}}
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end class="phoneButtons">
+      <button class="phoneButtonSpace" *ngIf="existActivity && isDuplicateable" ion-button icon-only (click)="duplicateActivity()" [color]="'light'">
+        <ion-icon  name="md-copy" ></ion-icon>
+      </button>
+      <button class="phoneButtonSpace" *ngIf="existActivity && isDeleteable" (click)="delete()" ion-button icon-only [color]="'light'">
+        <ion-icon name="md-trash" ></ion-icon>
+      </button>
+      <button (click)="flush()" *ngIf="isSaveable" ion-button icon-only [color]="'light'">
+        <ion-icon name="md-checkmark"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+  <div class="second-navbar" padding>
+    <p>
+      {{ 'Activities' | translate }}<span class="current-index"> | {{ 'EditActivity' | translate }}</span>
+    </p>
+  </div>
+
+</ion-header>
+
+<ion-content padding>
+
+  <div *ngIf="loadingActivity" class="spinner-container">
+    <ion-spinner name="ios"></ion-spinner>
+  </div>
+
+
+  <ion-list class="outer-list" *ngIf="!loadingActivity">
+    <ion-list-header no-margin color="gris" class="outer-list-header">
+      {{ 'Activity' | translate | uppercase }}
+    </ion-list-header>
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="generalOpened = !generalOpened" [class.opened]="generalOpened">
+        {{'General' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!generalOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="generalOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row center *ngIf="generalOpened">
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{'Operation' | translate}}</ion-label>
+                <ion-input type="text" disabled [(ngModel)]="operation[activity.HEADER.PROCESS_TYPE]"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(activity.HEADER.CATEGORY,'activity.HEADER.CATEGORY','currentCategory','Category','CATEGORY','DESCRIPTION',categories)">
+                <ion-label floating color="gris">{{'Category' | translate }}</ion-label>
+                <ion-input readonly [(ngModel)]="currentCategory.DESCRIPTION">
+                </ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(activity.HEADER.OBJECTIVE,'activity.HEADER.OBJECTIVE','currentObjetive','Objective','OBJECTIVE','DESCRIPTION',objectives)">
+                <ion-label floating color="gris">{{'Objective' | translate }}</ion-label>
+                <ion-input readonly [(ngModel)]="currentObjetive.DESCRIPTION">
+                </ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(currentStatus.STATUS,'currentStatus.STATUS','currentStatus','Status','STATUS','TXT30',states)">
+                <ion-label floating color="gris">{{'Status' | translate }}</ion-label>
+                <ion-input readonly [(ngModel)]="currentStatus.TXT30">
+                </ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(currentReason.CODE,'currentReason.CODE','currentReason','Reason','CODE','TEXT',reasons)">
+                <ion-label floating color="gris">{{'Reason' | translate }}</ion-label>
+                <ion-input readonly [(ngModel)]="currentReason.TEXT">
+                </ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div>
+            <ion-list>
+              <ion-item (click)="changeOptionSelected(currentResult.CODE,'currentResult.CODE','currentResult','Result','CODE','TEXT',results)">
+                <ion-label floating color="gris">{{'Result' | translate }}</ion-label>
+                <ion-input readonly [(ngModel)]="currentResult.TEXT">
+                </ion-input>
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-col>
+
+        <ion-col col-12 col-sm-6>
+          <div [formGroup]="activityForm">
+            <ion-list>
+              <ion-item>
+                <ion-label floating [color]="(activityForm.controls.DESCRIPTION.errors && activityForm.controls.DESCRIPTION.touched) ? 'danger' : 'gris'">{{'Description' | translate}} (*)</ion-label>
+                <ion-input type="text" formControlName="DESCRIPTION" required [(ngModel)]="activity.HEADER.DESCRIPTION"></ion-input>
+              </ion-item>
+            </ion-list>
+          </div>
+          <ion-row>
+            <ion-item class="subitem" col-8>
+              <ion-label floating color="gris">{{ 'From' | translate }}:</ion-label>
+              <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="currentDayFrom" [max]="maxYear" (click)="setLastDate()" (ionChange)="balanceDate('from')"></ion-datetime>
+            </ion-item>
+            <ion-item col-4>
+              <ion-label floating color="gris">{{ 'Time' | translate }}:</ion-label>
+              <ion-datetime minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="currentTimeFrom" (click)="setLastDate()" (ionChange)="balanceDate('from')"></ion-datetime>
+            </ion-item>
+            <ion-item class="subitem" col-8>
+              <ion-label floating color="gris">{{ 'To' | translate }}:</ion-label>
+              <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="currentDayTo" [max]="maxYear" (click)="setLastDate()" (ionChange)="balanceDate('to')"></ion-datetime>
+            </ion-item>
+            <ion-item col-4>
+              <ion-label floating color="gris">{{ 'Time' | translate }}:</ion-label>
+              <ion-datetime minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" displayFormat="HH:mm" pickerFormat="HH mm" [(ngModel)]="currentTimeTo" (click)="setLastDate()" (ionChange)="balanceDate('to')"></ion-datetime>
+            </ion-item>
+          </ion-row>
+        </ion-col>
+
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="employeeResponsibleOpened = !employeeResponsibleOpened"
+        [class.opened]="employeeResponsibleOpened">
+        {{ 'EmployeeResponsible' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!employeeResponsibleOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="employeeResponsibleOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="employeeResponsibleOpened">
+        <ion-col col-12 col-sm-6 *ngFor="let partner of filterEmployeeResponsible(activity.PARTNERS); let i=index">
+          <ion-list>
+            <ion-item (click)="!loadingOption && !loadingEmployeeResponsibles && editEmployeeResponsible(partner)">
+              <ion-label floating color="gris">{{'Partner' | translate }}</ion-label>
+              <ion-input [class.optionsDisabled]="loadingOption || loadingEmployeeResponsibles" readonly [(ngModel)]="partner.FULLNAME"></ion-input>
+              <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingEmployeeResponsibles && deleteData(partner,'partner');" name="ios-trash-outline"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+        <ion-col col-12>
+          <div *ngIf="loadingEmployeeResponsibles" class="spinner-container">
+            <ion-spinner name="ios"></ion-spinner>
+          </div>
+          <div *ngIf="!loadingEmployeeResponsibles" padding class="adder-button">
+            <button ion-button color="gris" (click)="!loadingOption && editEmployeeResponsible()" outline>{{ 'Add' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="contactInterlocutorOpened = !contactInterlocutorOpened"
+        [class.opened]="contactInterlocutorOpened">
+        <ion-label *ngIf="!isCheckedContacts()" >{{ 'Partner' | translate | uppercase }}
+          <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!contactInterlocutorOpened"></ion-icon>
+          <ion-icon name="ios-arrow-up" class="arrow" *ngIf="contactInterlocutorOpened"></ion-icon>
+        </ion-label>
+        <ion-label *ngIf="isCheckedContacts()" >{{ 'Partner' | translate | uppercase }} (*)
+          <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!contactInterlocutorOpened"></ion-icon>
+          <ion-icon name="ios-arrow-up" class="arrow" *ngIf="contactInterlocutorOpened"></ion-icon>
+        </ion-label>
+      </ion-list-header>
+
+      <ion-row *ngIf="contactInterlocutorOpened">
+        <ion-col col-12 col-sm-6 *ngFor="let partner of filterContactInterlocutor(activity.PARTNERS); let i=index">
+          <ion-list>
+            <ion-item (click)="!loadingOption && !loadingContactInterlocutors && editContactInterlocutor(partner)">
+              <ion-label floating color="gris">{{'Partner' | translate }}</ion-label>
+              <ion-input [class.optionsDisabled]="loadingOption || loadingContactInterlocutors" readonly [(ngModel)]="partner.FULLNAME"></ion-input>
+              <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingContactInterlocutors && watchPartner(partner.PARTNER_NO);" name="ios-person-outline"></ion-icon></button>
+              <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingContactInterlocutors && deleteData(partner,'partner');" name="ios-trash-outline"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+          <ion-item class="subitem" *ngFor="let contactPerson of filterContactPersons(activity.PARTNERS, partner)">
+            <ion-label floating color="gris">{{'ContactPerson' | translate }}</ion-label>
+            <ion-input [class.optionsDisabled]="loadingOption || loadingContactInterlocutors" readonly [(ngModel)]="contactPerson.FULLNAME"></ion-input>
+            <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingContactInterlocutors && watchPartner(contactPerson.PARTNER_NO);" name="ios-person-outline"></ion-icon></button>
+            <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingContactInterlocutors && deleteData(contactPerson,'partner');" name="ios-trash-outline"></ion-icon></button>
+          </ion-item>
+          <ion-item *ngIf="haveContactPerson(partner.RELATIONS) && haveMoreContactPerson(partner)" class="subitem" (click)="!loadingOption && !loadingContactInterlocutors && addContactPerson(partner)">
+            <ion-label color="gris">{{'ContactPersonNew' | translate }}</ion-label>
+            <button class="add-button" item-right><ion-icon name="ios-add"></ion-icon></button>
+          </ion-item>
+          <ion-item *ngIf="!haveContactPerson(partner.RELATIONS) || !haveMoreContactPerson(partner)" class="subitem">
+            <ion-label color="gris">{{'HaveNotContactPerson' | translate }}</ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col col-12>
+          <div *ngIf="loadingContactInterlocutors" class="spinner-container">
+            <ion-spinner name="ios"></ion-spinner>
+          </div>
+          <div *ngIf="!loadingContactInterlocutors" padding class="adder-button">
+            <button ion-button color="gris" (click)="!loadingOption && editContactInterlocutor()" outline>{{ 'Add' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="productsOpened = !productsOpened" [class.opened]="productsOpened">
+        {{ 'Products' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!productsOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="productsOpened"></ion-icon>
+      </ion-list-header>
+
+      <ion-row *ngIf="productsOpened">
+        <ion-col col-12 col-sm-6 *ngFor="let product of activity.MATERIAL_TAB">
+          <ion-list>
+            <ion-item (click)="!loadingOption && !loadingProducts && editProduct(product)">
+              <ion-label floating color="gris">{{'Product' | translate }}</ion-label>
+              <ion-input [class.optionsDisabled]="loadingOption || loadingProducts" readonly [(ngModel)]="product.DESCRIPTION"></ion-input>
+              <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingProducts && deleteData(product,'product');" name="ios-trash-outline"></ion-icon></button>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+        <ion-col col-12>
+          <div *ngIf="loadingProducts" class="spinner-container">
+            <ion-spinner name="ios"></ion-spinner>
+          </div>
+          <div *ngIf="!loadingProducts" padding class="adder-button">
+            <button ion-button color="gris" (click)="!loadingOption && editProduct()" outline>{{ 'Add' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="notesOpened = !notesOpened" [class.opened]="notesOpened">
+        {{ 'Notes' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!notesOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="notesOpened"></ion-icon>
+      </ion-list-header>
+      <ion-row *ngIf="notesOpened" id="addNota">
+        <ion-col col-12 *ngFor="let nota of activity.TEXT; let i = index;">
+          <ion-card (click)="editNota(nota)">
+            <div *ngFor="let typeNote of textClass">
+              <div *ngIf="nota.TDID == typeNote.TDID">
+                <ion-card-header>
+                  <ion-item>
+                    <span class="noteTitle">{{ 'Note' | translate }} {{i+1}}:</span>
+                    <button class="trash-button" item-right (click)="$event.stopPropagation();deleteData(nota,'note')"><ion-icon name="ios-trash-outline"></ion-icon></button>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label class="noteType">{{typeNote.TDTEXT}}</ion-label>
+                  </ion-item>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-item>
+                    <ion-label class="noteContent">{{ nota.TDLINE }}</ion-label>
+                  </ion-item>
+                </ion-card-content>
+              </div>
+            </div>
+          </ion-card>
+        </ion-col>
+        <ion-col col-12>
+          <div class="adder-button" padding>
+            <button ion-button color="gris" (click)="editNota()" outline>{{ 'AddNota' | translate }}</button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+
+
+
+
+
+
+  </ion-list>
+
+</ion-content>

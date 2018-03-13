@@ -1,0 +1,46 @@
+select-search-modal,  select-search-modal-web{
+
+    ion-spinner * {
+        width: 50px;
+        height: 50px;
+    }
+    ion-grid {
+        height: 100%;
+        justify-content: center;
+        display: flex!important;
+        align-content: center!important;
+        align-items: center!important;
+    }
+    .spinner-container {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .spinner-search {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .active{
+        visibility: hidden;
+    }
+
+    .loading{
+        display: flex;
+        justify-content: center;
+        font-size: 4em;
+    }
+
+    .borderInput{
+        border-bottom: 1px solid #dedede;
+    }       
+    
+    .defaultOption{
+        border-style: dashed;
+        border-width: 2px;
+        border-color: $gris-opacidad60;
+    }
+  
+}

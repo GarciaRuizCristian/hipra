@@ -1,0 +1,48 @@
+pdf-view-modal {
+    position:relative;
+    z-index:999999999 !important;
+
+    ion-spinner * {
+        width: 50px;
+        height: 50px;
+    }
+    ion-grid {
+        height: 100%;
+        justify-content: center;
+        display: flex!important;
+        align-content: center!important;
+        align-items: center!important;
+    }
+    .spinner-container {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+    .active{
+        visibility: hidden;
+    }
+    .loading{
+        display: flex!important;
+        align-content: center!important;
+        align-items: center!important;
+    }
+
+    ::-webkit-scrollbar{      
+        border-radius: 55px;
+        width:1%;
+    }
+
+    ::-webkit-scrollbar-track
+    {
+       
+    }
+
+    ::-webkit-scrollbar-thumb{
+        border-radius: 55px;
+        background: black;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+        box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border: none;
+    }
+  
+}

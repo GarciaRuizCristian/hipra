@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle [color]="'light'">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <img class="header-logo" src="../../assets/img/logo-menu.png">
+
+    <ion-buttons end class="bigScreenButtons">
+      <button ion-button icon-left (click)="openMap()" [color]="'light'">
+        <ion-icon name="ios-map-outline"></ion-icon>
+        {{'Map' | translate}}
+      </button>
+      <button ion-button icon-left (click)="refresh()" [color]="pendingSync ? 'danger' : 'light'">
+        <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+        {{'Update' | translate}}
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end class="smallScreenButtons">
+      <button ion-button icon-only (click)="openMap()" [color]="'light'">
+        <ion-icon name="ios-map-outline"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="refresh()" [color]="pendingSync ? 'danger' : 'light'">
+        <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <ion-row class="second-navbar">
+    <p class="contacts-tittle" col-5 col-sm-3>
+      {{ 'Contacts' | translate }}
+      <span class="contacts-number">\({{contactsScrollWebProvider.totalOfContacts}}\)</span>
+    </p>
+    <ion-searchbar col-7 col-sm-9 placeholder="{{ 'Search' | translate }}" [formControl]="searchField"></ion-searchbar>
+  </ion-row>
+</ion-header>
+
+<ion-content padding no-bounce #content>
+  <ion-list class="outer-list">
+    <ion-row no-margin color="gris" class="outer-list-header">
+      <ion-col col-5 col-sm-5 col-md-3 col-lg-3 class="textPartners">
+        {{ 'Partners' | translate | uppercase }}
+      </ion-col>
+      <ion-col col-7 col-sm-7 col-md-2 col-lg-2 *ngIf="contactsScrollWebProvider.totalOfContacts > 0" class="current-page-partners">
+        \({{contactsScrollWebProvider.currentPage + 1}}\/{{contactsScrollWebProvider.maxPage + 1}}\)
+      </ion-col>
+      <ion-col col-12 col-sm-12 col-md-7 col-lg-7 class="scroll-partners">
+        <ion-range [(ngModel)]="valueRange" *ngIf="contactsScrollWebProvider.maxPage>0" debounce="100" (ionChange)="movePageRange($event.value - 1)"
+          pin="true" min="1" max="{{contactsScrollWebProvider.maxPage + 1}}" snaps="true">
+          <ion-icon range-left name="ios-arrow-back" class="white-arrow" *ngIf="contactsScrollWebProvider.currentPage != 0" (click)="moveToPreviousSlide()"></ion-icon>
+          <ion-icon range-right name="ios-arrow-forward" class="white-arrow" *ngIf="contactsScrollWebProvider.currentPage != contactsScrollWebProvider.maxPage" (click)="moveToNextSlide()"></ion-icon>
+          <ion-icon range-left name="ios-arrow-back" class="grey-arrow" *ngIf="contactsScrollWebProvider.currentPage == 0"></ion-icon>
+          <ion-icon range-right name="ios-arrow-forward" class="grey-arrow" *ngIf="contactsScrollWebProvider.currentPage == contactsScrollWebProvider.maxPage"></ion-icon>
+        </ion-range>
+      </ion-col>
+    </ion-row>
+  </ion-list>
+
+  <ion-row>
+    <ion-card class="background-card" *ngIf="!contactsScrollWebProvider.loadingPartners" no-lines no-padding no-margin col-12 (swiperight)="moveToPreviousSlide()"
+      (swipeleft)="moveToNextSlide()">
+      <ion-card-content>
+        <ion-row center>
+          <p class="no-contacts" *ngIf="contactsScrollWebProvider.totalOfContacts == 0">{{'ContactsNotFound' | translate }}</p>
+          <ion-col *ngFor="let partnerAbstractWeb of contactsScrollWebProvider.actualPage" col-12 col-sm-6 col-md-4 col-lg-3 no-padding no-margin>
+            <ion-card [ngClass]="partnerAbstractWeb.SENDING ? 'wrapper-color-state-danger' : 'card-wrapper'" no-padding no-margin>
+              <div *ngIf="partnerAbstractWeb.PHONE.length > 0">
+                <button ion-button clear class="icon-phone" (click)="callPhone(partnerAbstractWeb,$event)" icon-only>
+                  <ion-icon name="md-call"></ion-icon>
+                </button>
+              </div>
+
+              <div *ngIf="partnerAbstractWeb.PHONE == ''">
+                <button ion-button clear class="icon-phone-disabled" icon-only>
+                  <ion-icon name="md-call"></ion-icon>
+                </button>
+              </div>
+
+              <div tappable (click)="loadContact(partnerAbstractWeb.PARTNER, partnerAbstractWeb.PARTNER_GUID)">
+                <ion-card-content>
+                  <div class="card-title">{{ partnerAbstractWeb.NAME }}</div>
+                  <div class="card-text">{{ partnerAbstractWeb.ADDRESS }}</div>
+                </ion-card-content>
+              </div>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-row>
+
+  <div *ngIf="contactsScrollWebProvider.loadingPartners" class="spinner-container">
+    <ion-spinner name="ios"></ion-spinner>
+    <p id="spinner-animated-text">{{ 'PreparingContactList' | translate }}</p>
+  </div>
+
+  <ion-fab bottom right>
+    <button clear ion-fab (click)="loadNewContact()" mini>
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>

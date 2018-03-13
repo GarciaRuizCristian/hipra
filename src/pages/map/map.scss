@@ -1,0 +1,48 @@
+map-page {
+
+  ion-header{
+
+    .header-logo{
+      max-height: 48px;
+      padding-left: 19px;
+    }
+  }
+
+  ion-content{
+
+    .spinner-container{
+        padding-top: 40px;
+        text-align: center;
+        ion-spinner * {
+          width: 40px;
+          height: 40px;
+          stroke: #444;
+          fill: #222;
+        }
+      }
+
+    .scroll {
+        height: 100%
+      }
+ 
+      #map {
+        width: 100%;
+        height: 100%;
+
+        .marker-info{
+          font-family: "Roboto-Regular";
+          .name{
+            color: $verde;
+          }
+          .address{
+            text-indent: 20px;
+            font-size: 18px;
+            color: $gris;
+          }
+        }
+
+      }
+
+  }
+  
+}

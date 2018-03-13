@@ -1,0 +1,36 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>
+            {{title}}
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="dismiss()">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-searchbar placeholder="{{ 'Search' | translate }}" [formControl]="searchField"></ion-searchbar>
+</ion-header>
+
+<ion-content>
+    <div *ngIf="!loadingSearchedOptions">
+        <ion-list radio-group [(ngModel)]="this.val">
+            <ion-item *ngIf="allowEmpty === 'true'">
+                <ion-label></ion-label>
+                <ion-radio value=""></ion-radio>
+            </ion-item>
+            <ion-item *ngFor="let option of shownFilteredOptions; let i = index" [class.defaultOption]="defaultOption && option[key] == defaultOption">
+                <ion-label>
+                    <span *ngIf="showKey === 'true'">{{option[key]}} - </span>{{option[label]}}</ion-label>
+                <ion-radio [value]="option[key]" (ionSelect)="dismiss(i)"></ion-radio>
+            </ion-item>
+        </ion-list>
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
+
+    <div *ngIf="loadingSearchedOptions" class="spinner-search">
+        <ion-spinner name="ios"></ion-spinner>
+    </div>
+</ion-content>

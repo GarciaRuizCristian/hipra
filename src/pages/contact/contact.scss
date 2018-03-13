@@ -1,0 +1,310 @@
+.ios, .md{
+
+  page-contact {
+
+    .specie-label{
+      white-space: pre-line;
+      max-width: 81%;
+    } 
+
+    .specie-input > input{
+      text-align: end;
+      margin:0px;
+    }
+
+    @media(max-width:639px) {
+        .ipadButtons{
+        visibility: hidden;
+        display: none;
+        }
+    }
+
+    @media(min-width:640px) {
+        .phoneButtons{
+        visibility: hidden;
+        display: none;
+        }
+    }
+
+    ion-header{
+
+      .header-logo{
+            max-height: 48px;
+            padding-left: 5px;
+        }
+
+      .second-navbar{
+        color: $gris;
+        background-color: $gris01;
+        font-size: 16px;
+
+        p{
+          display: inline-block;
+          font-family: "Roboto-Light";
+          margin: 0px;
+          background-color: $gris01;
+
+          .current-index{
+            font-family: "Roboto-Medium";
+          }
+        }
+
+        .latest-activity{
+          float: right;
+        }
+      }
+    }
+    
+    ion-content{
+      background-color: $gris02;
+
+      .spinner-container{
+        padding-top: 40px;
+        text-align: center;
+
+        ion-spinner * {
+          width: 40px;
+          height: 40px;
+          stroke: #444;
+          fill: #222;
+        }
+      }
+
+      .spinner-relations{
+        padding-top: 10px;
+        padding-bottom: 20px;
+        text-align: center;
+        
+        ion-spinner * {
+          width: 40px;
+          height: 40px;
+          stroke: #444;
+          fill: #222;
+        }
+      }
+
+      .outer-list{
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-bottom: 10px;
+        background-color: $blanco;
+
+        ion-list{
+          margin: 0px;
+
+          .list-ios > .item-block:first-child{
+            border-top: 0px;
+          }
+
+          .arrow-button{
+            background-color: transparent;
+            font-size: 16px;
+            position: relative;
+            bottom: -15px;
+            right: -10px;
+            color: $gris;
+          }
+
+          .select-arrow-button{
+            background-color: transparent;
+            font-size: 22px;
+            position: relative;
+            bottom: -13px;
+            right: -14px;
+            color: $gris;
+          }
+
+          .trash-button{
+            background-color: transparent;
+            font-size: 24px;
+            position: relative;
+            bottom: -4px;
+            right: -10px;
+            color: $gris;
+          }
+
+          .contact-button{
+            background-color: transparent;
+            font-size: 24px;
+            position: relative;
+            bottom: -4px;
+            right: 10px;
+            color: $gris;
+          }
+
+          .add-button{
+            background-color: transparent;
+            font-size: 24px;
+            color: $verde;
+          }
+        }
+      
+        .outer-list-header{
+          font-size: 18px;
+          font-family: "Roboto-Regular";
+          letter-spacing: 1px;
+        }
+
+        .inner-list{
+
+          .inner-list-header{
+            color: $gris;
+            font-size: 16px;
+            @media screen and (max-width: 420px){
+              font-size: 13px;
+            }
+            @media screen and (max-width: 376px){
+              font-size: 11px;
+            }
+            @media screen and (max-width: 320px){
+              font-size: 9px;
+            }
+            font-family: "Roboto-Regular";
+
+            &.opened{
+              margin-bottom: 0px;
+            }
+
+            .arrow{
+              float: right;
+              padding-right: 5px; 
+            }
+          }
+
+          .map-container{
+            text-align: center;
+            .map-button{
+              height: 100%;
+              padding: 5px;
+            }
+          }
+
+          #addNota{
+            .noteTitle{
+              font-family: "Roboto-Medium";
+            }
+            .noteType{
+              font-family: "Roboto-Regular";
+              padding-left: 16px;
+              white-space: pre-wrap;
+              border-bottom: 1px solid $gris03;
+              display: block;
+            }
+            .noteContent{
+              white-space: pre-wrap;
+            }
+          }
+
+          .adder-button{
+            text-align: center;
+          }
+
+          .subitem{
+            text-indent: 20px;
+          }
+
+          ion-item{
+            font-family: "Roboto-Light";
+          }
+
+          ion-input{
+            font-family: "Roboto-Medium";
+            color:black;
+          }
+
+          .inner-inner-list{
+
+            .inner-inner-list-header{
+              margin-top: 10px;
+              color: $gris-opacidad60;
+              font-size: 16px;
+              font-family: "Roboto-Medium";
+
+              &.opened{
+                margin-bottom: 10px;
+              }
+
+              .arrow{
+                float: right;
+                padding-right: 5px; 
+              }
+            }
+
+            .subitem{
+              text-indent: 20px;
+            }
+
+            ion-item{
+              font-family: "Roboto-Light";
+            }
+
+            ion-input{
+              font-family: "Roboto-Medium";
+              color:black;
+            }
+          }
+        }
+
+      }
+    }
+
+    .activity-card{
+    
+      .background-card {
+          background-color: white;
+          margin-left: 7px;
+          height: 100%;
+      }
+      .wrapper-color-state-open {
+          background-color: color($colors, gris01);
+          height: 100%;
+      }
+      .wrapper-color-state-close {
+          background-color: color($colors, secondary);
+          height: 100%;
+      }
+      .wrapper-color-state-danger {
+          background-color: color($colors, danger);
+          height: 100%;
+      }
+      .icon-state-open {
+          float: right;
+          color: color($colors, primary);
+      }
+      .icon-state-close {
+          float: right;
+          color: color($colors, secondary);
+      }
+      .icon-state-danger {
+          float: right;
+          color: color($colors, danger);  
+      }
+      .borderInput{
+        border-bottom: 1px solid #dedede;
+      }
+
+      .activity-title{
+        color: black;
+        font-family: "Roboto-Medium";
+      }
+
+      .activity-operation{
+        color: black;
+        font-family: "Roboto-Regular";
+      }
+
+      .activity-date{
+        color: $gris-opacidad60;
+        font-family: "Roboto-Regular";
+      } 
+
+      .activity-contact{
+        color: black;
+        font-family: "Roboto-Regular";
+      }
+
+    }
+
+  }
+
+}

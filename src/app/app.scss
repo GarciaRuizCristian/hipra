@@ -1,0 +1,229 @@
+// http://ionicframework.com/docs/v2/theming/
+
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+
+
+    //GLOBAL VARIABLES
+    $verde: #6CC14A;
+    $gris: #616365;
+    $gris-opacidad60: rgba(97,99,101,0.6);
+
+    $gris01: #F4F4F4;
+    $gris02: #E7E7E7;
+    $gris03: #CCCCCC;
+    $gris04: #333333;
+
+    $blanco: #FFFFFF;
+    $negro: #000000;
+    $negro-opacidad20: rgba(0,0,0,0.2);
+
+    //FONTS
+    @font-face {
+        font-family: 'Roboto-Light';
+        font-weight: normal;
+        font-style: normal;
+        src: url('../assets/fonts/Roboto-Light.ttf');
+    }
+    @font-face {
+        font-family: 'Roboto-Regular';
+        font-weight: normal;
+        font-style: normal;
+        src: url('../assets/fonts/Roboto-Regular.ttf');
+    }
+    @font-face {
+        font-family: 'Roboto-Medium';
+        font-weight: normal;
+        font-style: normal;
+        src: url('../assets/fonts/Roboto-Medium.ttf');
+    }
+
+
+.card-ios .item-ios.item-block .item-inner {
+    border-bottom: 0.55px solid #c8c7cc;
+}
+
+.list-md .item-input:last-child {
+    border-bottom: 0px;
+}
+
+//Menu
+.list-side-menu-top {
+    margin-top: 3px;
+}
+.side-menu-item {
+    color: gray;
+}
+.side-menu-item.active {
+    .mark {
+        background: color($colors, primary);
+        width: 5px;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top:0;
+    }
+}
+.line-menu-separator {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin-bottom: 16px;
+}
+.logo-menu {
+    width:100%;
+    height:auto;
+    max-width: 100px;
+    display: block; 
+    margin-right: auto;
+    background-color: color($colors, primary);
+}
+.user-info {
+    color: white;
+    width: 100%;
+    font-weight: bold;
+    p{
+        line-height: 48px;
+        margin: 0px;
+    }
+}
+.queue {
+    color: white;
+    font-weight: bold;
+    text-align: end;
+    button{
+        margin:0px;
+    }
+}
+.sync-info {
+    display: block;
+    color: white;
+    font-weight: bold;
+}
+.button-menu-sync {
+    float: right;
+}
+.scroll-content {
+    overflow-y: auto;
+}
+// ios-title
+
+.toolbar-ios ion-title{
+    padding: 0 12px;
+    color: #424242 ;
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: static;
+}
+
+.input-label {
+   white-space: normal !important;
+}
+//ALert
+.alert-md .alert-head {
+    background-color: color($colors, primary);
+    color: white;
+}
+
+.alert-md .alert-message {
+    padding: 24px 24px 24px 24px;
+}
+
+.alert-ios .alert-head {
+    background-color: color($colors, primary);
+    color: white;
+}
+
+.alert-ios .alert-message {
+    padding: 24px 24px 24px 24px;
+}
+
+.alert-message {
+    overflow-y: auto;
+}
+  
+.phoneButtonSpace{
+    margin-right: 8px;
+}
+
+/* Hack for ionicicons v2 (no animation code) */
+.ion-spin-animation { -webkit-animation: spin 1s infinite linear; -moz-animation: spin 1s infinite linear; -o-animation: spin 1s infinite linear; animation: spin 1s infinite linear; }
+
+@-moz-keyframes spin { 0% { -moz-transform: rotate(0deg); }
+    100% { -moz-transform: rotate(359deg); } }
+@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(359deg); } }
+@-o-keyframes spin { 0% { -o-transform: rotate(0deg); }
+    100% { -o-transform: rotate(359deg); } }
+@-ms-keyframes spin { 0% { -ms-transform: rotate(0deg); }
+    100% { -ms-transform: rotate(359deg); } }
+@keyframes spin { 0% { transform: rotate(0deg); }
+    100% { transform: rotate(359deg); } }
+.ion-load-a.ion-spin-animation { -webkit-animation-timing-function: steps(8, start); -moz-animation-timing-function: steps(8, start); animation-timing-function: steps(8, start); }
+
+
+.ios ion-nav > .ion-page > .toolbar.statusbar-padding:first-child, .ios ion-nav > .ion-page > ion-header > .toolbar.statusbar-padding:first-child, .ios ion-tab > .ion-page > ion-header > .toolbar.statusbar-padding:first-child, .ios ion-tabs > .ion-page.tab-subpage > ion-header > .toolbar.statusbar-padding:first-child, .ios ion-menu > .menu-inner > .toolbar.statusbar-padding:first-child, .ios ion-menu > .menu-inner > ion-header > .toolbar.statusbar-padding:first-child{
+    padding-top: 10px; 
+    padding-bottom: 2px;
+}
+
+.ios ion-nav > .ion-page > .toolbar.statusbar-padding:first-child ion-segment, .ios ion-nav > .ion-page > .toolbar.statusbar-padding:first-child ion-title, .ios ion-nav > .ion-page > ion-header > .toolbar.statusbar-padding:first-child ion-segment, .ios ion-nav > .ion-page > ion-header > .toolbar.statusbar-padding:first-child ion-title, .ios ion-tab > .ion-page > ion-header > .toolbar.statusbar-padding:first-child ion-segment, .ios ion-tab > .ion-page > ion-header > .toolbar.statusbar-padding:first-child ion-title, .ios ion-tabs > .ion-page.tab-subpage > ion-header > .toolbar.statusbar-padding:first-child ion-segment, .ios ion-tabs > .ion-page.tab-subpage > ion-header > .toolbar.statusbar-padding:first-child ion-title, .ios ion-menu > .menu-inner > .toolbar.statusbar-padding:first-child ion-segment, .ios ion-menu > .menu-inner > .toolbar.statusbar-padding:first-child ion-title, .ios ion-menu > .menu-inner > ion-header > .toolbar.statusbar-padding:first-child ion-segment, .ios ion-menu > .menu-inner > ion-header > .toolbar.statusbar-padding:first-child ion-title{
+    padding-top: 15px;
+    height: calc(44px + 10px);
+    min-height: calc(44px + 10px);
+}
+
+.list-ios .item-block.ng-invalid.ng-touched .item-inner{
+   
+}
+
+ion-item {
+    box-shadow: none !important;
+}
+
+ion-item.ng-invalid.ng-touched:not(.input-has-focus) ion-input{
+    border-bottom:none !important;
+    box-shadow: none !important; 
+}
+
+ion-item .item-inner{
+    border-bottom:none !important;
+    box-shadow: none !important; 
+}
+
+
+.toolbar-title.toolbar-title-ios {
+    white-space: normal;
+}
+
+  @media(max-width:639px) {
+      .ipadSync{
+      visibility: hidden;
+      display: none;
+      }
+  }
+
+  @media(min-width:640px) {
+      .iphoneSync{
+      visibility: hidden;
+      display: none;
+      }
+  }
+  
+  .input-cover{
+    position: static;
+  }

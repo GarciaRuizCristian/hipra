@@ -1,0 +1,44 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>
+            {{'EditNota' | translate}}
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="dismiss('cancel')">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding [formGroup]="form">
+    <ion-list>
+        <ion-item (click)="selectNoteType()">
+            <ion-label floating [color]="(form.controls.noteType.errors && form.controls.noteType.touched) ? 'danger' : 'gris'">{{ 'Type' | translate }}</ion-label>
+            <ion-input required readonly [(ngModel)]="noteTypeLabel" formControlName="noteType"></ion-input>
+            <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+        </ion-item>
+    </ion-list>
+    <ion-item id="noteContent2">
+        <ion-label floating [color]="(form.controls.noteContent.errors && form.controls.noteContent.touched) ? 'danger' : 'gris'">{{ 'Content' | translate }}</ion-label>
+        <ion-textarea required [(ngModel)]="noteContent" formControlName="noteContent">
+        </ion-textarea>
+    </ion-item>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar>
+        <div style="text-align: center">
+            <ion-buttons class="ipadButtons">
+                <button ion-button icon-left outline color="primary" (click)="saveNote()">
+                    <ion-icon name="ios-document"></ion-icon>
+                    {{ 'Save' | translate }}
+                 </button>
+                <button ion-button icon-left outline color="primary" (click)="dismiss('cancel')">
+                    <ion-icon name="close"></ion-icon>
+                    {{ 'Cancel' | translate }}
+                </button>
+            </ion-buttons>
+        </div>
+    </ion-toolbar>
+</ion-footer>

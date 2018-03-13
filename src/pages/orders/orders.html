@@ -1,0 +1,279 @@
+<!--
+  Generated template for the Orders page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<!--
+  Estados de las ordenes (valor -1 Error)
+  Order.STATE_OPEN = 0
+  Order.STATE_PROCESSING = 1
+  Order.STATE_CLOSE = 2
+-->
+
+<!-- 
+  Tipos de ordenes:
+  ORDER_TYPE_OPPORTUNITY = 'O'
+  ORDER_TYPE_SALES = 'S'
+-->
+
+<ion-header>
+  <!-- Primera barra de navegacion -->
+  <ion-navbar color="primary">
+    <!-- Boton Menu -->
+    <ion-buttons left>
+      <button ion-button menuToggle start [color]="'light'">
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <!-- Logo de HIPRA -->
+    <img class="header-logo" src="../../assets/img/logo-menu.png">
+
+    <!-- Boton Actualizar para iPad -->
+    <ion-buttons end class="ipadButtons">
+      <button ion-button icon-left (click)="refresh()" [color]="pendingSync ? 'danger' : 'light'">
+        <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+        {{'Update' | translate}}
+      </button>
+    </ion-buttons>
+
+    <!-- Boton Actualizar para iPhone -->
+    <ion-buttons end class="phoneButtons">
+      <button ion-button icon-only (click)="refresh()" [color]="pendingSync ? 'danger' : 'light'">
+        <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <!-- Segunda barra de navegacion -->
+  <ion-row class="second-navbar">  
+    <!-- Titulo + Total de ordenes -->  
+    <div class="bloqueSuperior" col-5 col-md-2>
+      <p>
+        {{ 'Orders' | translate }} 
+        <span class="order-number">\({{ordersScrollWebProvider.totalOfOrders}}\)</span>
+      </p>
+    </div>
+
+    <!-- Barra de busqueda -->
+    <ion-searchbar col-7 col-md-5 placeholder="{{ 'Search' | translate }}" [(ngModel)]="filter.search" (keyup)="search($event)" (ionClear)="filterClear()"></ion-searchbar>
+    
+    <!-- Tipo de filtro + Tipo de orden -->
+    <div class="bloqueInferior" col-12 col-md-5>
+      <p class="filterType navigation-buttons-bottom">  
+        <ion-icon name="unlock" class="iconFilterType" [class.secondary]="filter.stateOpen" (click)="filterOpen()"></ion-icon> &nbsp;&nbsp;
+        <ion-icon name="time" class="iconFilterType" [class.secondary]="filter.stateProcessing" (click)="filterProcessing()"></ion-icon> &nbsp;&nbsp;
+        <ion-icon name="lock" class="iconFilterType" [class.secondary]="filter.stateClose" (click)="filterClosed()"></ion-icon> &nbsp;&nbsp;
+      </p>
+      <p class="orderType navigation-buttons-right-iphone navigation-buttons-bottom" (click)="switchOrder('sales')" *ngIf="ordersScrollWebProvider.actualOrderType == 'opportunity'">
+        <ion-icon name="ios-folder-open-outline"></ion-icon>
+        <span>{{ 'ViewSalesOrder' | translate }}</span>
+      </p>
+      <p class="orderType navigation-buttons-right-iphone navigation-buttons-bottom" (click)="switchOrder('opportunity')" *ngIf="ordersScrollWebProvider.actualOrderType == 'sales'">
+        <ion-icon name="ios-folder-open-outline"></ion-icon>
+        <span>{{ 'ViewOpportunity' | translate }}</span>
+      </p>
+    </div>
+  </ion-row>
+</ion-header>
+
+
+
+
+
+
+
+
+
+
+
+<ion-content padding no-bounce>
+  <div [ngSwitch]="ordersScrollWebProvider.actualOrderType">
+    <!-- OPORTUNIDADES -->
+    <div *ngSwitchCase="'opportunity'">
+      <!-- Titulo + Scroll -->
+      <ion-list class="outer-list">
+        <!--Para tablet-->
+        <ion-row no-margin color="gris" class="ipadButtons outer-list-header">
+          <ion-col col-12 col-sm-12 col-md-4 col-lg-3 class="contentTitle">
+            <span class="textOrders">{{ 'Opportunities' | translate | uppercase }}</span>
+            <span class="current-page-orders">\({{ ordersScrollWebProvider.totalOfOpportunities }}\)</span>
+          </ion-col>
+          <ion-col col-12 col-sm-12 col-md-2 col-lg-2 *ngIf="ordersScrollWebProvider.totalOfOpportunities > 0" class="current-page-orders">
+            \({{ordersScrollWebProvider.currentPageOpportunity + 1}}\/{{ordersScrollWebProvider.maxPageOpportunities + 1}}\)
+          </ion-col>
+          <ion-col col-12 col-sm-12 col-md-6 col-lg-7 class="scroll-orders">
+            <ion-range [(ngModel)]="valueRangeOpportunities" *ngIf="ordersScrollWebProvider.maxPageOpportunities>0" debounce="0" (ionChange)="movePageRangeOpportunity($event.value - 1)"
+              pin="true" min="1" max="{{ordersScrollWebProvider.maxPageOpportunities + 1}}" snaps="true">
+              <ion-icon range-left name="ios-arrow-back" class="white-arrow" *ngIf="ordersScrollWebProvider.currentPageOpportunity != 0" (click)="moveToPreviousSlideOpportunity()"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="white-arrow" *ngIf="ordersScrollWebProvider.currentPageOpportunity != ordersScrollWebProvider.maxPageOpportunities" (click)="moveToNextSlideOpportunity()"></ion-icon>
+              <ion-icon range-left name="ios-arrow-back" class="grey-arrow" *ngIf="ordersScrollWebProvider.currentPageOpportunity == 0"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="grey-arrow" *ngIf="ordersScrollWebProvider.currentPageOpportunity == ordersScrollWebProvider.maxPageOpportunities"></ion-icon>
+            </ion-range>
+          </ion-col>
+        </ion-row>
+        <!--Para iphone-->
+        <ion-row no-margin color="gris" class="phoneButtons outer-list-header">
+          <ion-col col-12 col-sm-12 col-md-4 col-lg-4 class="contentTitle-phone">
+            <span class="textOrders-phone">{{ 'Opportunities' | translate | uppercase }}</span>
+            <span class="current-page-orders">\({{ ordersScrollWebProvider.totalOfOpportunities }}\)</span>
+          </ion-col>
+          <ion-col col-12 col-sm-12 col-md-8 col-lg-8 class="scroll-orders-phone">
+            <ion-range [(ngModel)]="valueRangeOpportunities" debounce="0" (ionChange)="movePageRangeOpportunity($event.value - 1)"
+              pin="true" min="1" max="{{ordersScrollWebProvider.maxPageOpportunities + 1}}" snaps="true">
+              <ion-icon range-left class="current-page-orders-phone vertical">\({{ordersScrollWebProvider.currentPageOpportunity + 1}}\/{{ordersScrollWebProvider.maxPageOpportunities + 1}}\)</ion-icon>
+              <ion-icon range-left name="ios-arrow-back" class="white-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageOpportunity != 0" (click)="moveToPreviousSlideOpportunity()"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="white-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageOpportunity != ordersScrollWebProvider.maxPageOpportunities" (click)="moveToNextSlideOpportunity()"></ion-icon>
+              <ion-icon range-left name="ios-arrow-back" class="grey-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageOpportunity == 0"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="grey-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageOpportunity == ordersScrollWebProvider.maxPageOpportunities"></ion-icon>
+            </ion-range>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+
+      <!-- Spinner de carga -->
+      <div *ngIf="ordersScrollWebProvider.loadingOpportunities" class="spinner-container">
+        <ion-spinner name="ios"></ion-spinner>
+        <p id="spinner-animated-text">{{ 'PreparingOpportunitiesList' | translate }}</p>
+      </div>
+
+      <!-- Contenedor de Oportunidades -->
+      <ion-row>
+        <ion-card class="background-card" *ngIf="!ordersScrollWebProvider.loadingOpportunities" no-lines no-padding no-margin col-12 (swiperight)="moveToPreviousSlideOpportunity()" (swipeleft)="moveToNextSlideOpportunity()">
+          <ion-card-content>
+            <!--Para tablet-->
+            <ion-row center>
+              <p class="no-orders" *ngIf="ordersScrollWebProvider.totalOfOpportunities == 0">{{'OpportunitiesNotFound' | translate }}</p>
+              <ion-col *ngFor="let opportunityAbstract of ordersScrollWebProvider.actualPageOpportunity" col-12 col-sm-6 col-md-4 col-lg-3 no-padding no-margin>
+                <ion-card [ngClass]="opportunityAbstract.STATE == 0 ? 'wrapper-color-state-open' : opportunityAbstract.STATE == 2 ? 'wrapper-color-state-close' : opportunityAbstract.STATE == 1 ? 'wrapper-color-state-processing' : 'wrapper-color-state-danger'"
+                  style="position: relative;" no-padding no-margin>
+                  <button [ngClass]="opportunityAbstract.STATE == 0 ? 'icon-state-open' : opportunityAbstract.STATE == 2 ? 'icon-state-close' : opportunityAbstract.STATE == 1 ? 'icon-state-processing' : 'icon-state-danger'" ion-button clear>
+                    <ion-icon *ngIf="opportunityAbstract.STATE == 0" name="unlock" title="{{'StateOpen' | translate}}"></ion-icon>
+                    <ion-icon *ngIf="opportunityAbstract.STATE == 2" name="lock" title="{{'StateClose' | translate}}"></ion-icon>
+                    <ion-icon *ngIf="opportunityAbstract.STATE == 1" name="time" title="{{'StateProcessing' | translate}}"></ion-icon>
+                  </button>
+
+                  <div tappable (click)="loadOrder(opportunityAbstract.GUID)">
+                    <ion-card-header>
+                      {{ opportunityAbstract.ID }}
+                    </ion-card-header>
+                    <ion-card-content>
+                      <div #nameRequestor>{{ getNameRequestor(opportunityAbstract, nameRequestor) }}</div>
+                      <div>{{ ordersScrollWebProvider.getStatusTxt30(opportunityAbstract) }}</div>
+                      <div class="date">{{ opportunityAbstract.DATETIME_TO }}</div>
+                    </ion-card-content>
+                  </div>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-row>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ORDENES DE VENTA -->
+    <div *ngSwitchCase="'sales'">
+      <!-- Titulo + Scroll -->
+      <ion-list class="outer-list">
+        <!--Para tablet-->
+        <ion-row no-margin color="gris" class="ipadButtons outer-list-header">
+          <ion-col col-12 col-sm-12 col-md-4 col-lg-4 class="contentTitle">
+            <span class="textOrders">{{ 'SalesOrd' | translate | uppercase }}</span>
+            <span class="current-page-orders">\({{ ordersScrollWebProvider.totalOfSales }}\)</span>
+          </ion-col>
+          <ion-col col-12 col-sm-12 col-md-2 col-lg-2 *ngIf="ordersScrollWebProvider.totalOfSales > 0" class="current-page-orders">
+            \({{ordersScrollWebProvider.currentPageSale + 1}}\/{{ordersScrollWebProvider.maxPageSales + 1}}\)
+          </ion-col>
+          <ion-col col-12 col-sm-12 col-md-6 col-lg-6 class="scroll-orders">
+            <ion-range [(ngModel)]="valueRangeSales" *ngIf="ordersScrollWebProvider.maxPageSales>0" debounce="0" (ionChange)="movePageRangeSale($event.value - 1)"
+              pin="true" min="1" max="{{ordersScrollWebProvider.maxPageSales + 1}}" snaps="true">
+              <ion-icon range-left name="ios-arrow-back" class="white-arrow" *ngIf="ordersScrollWebProvider.currentPageSale != 0" (click)="moveToPreviousSlideSale()"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="white-arrow" *ngIf="ordersScrollWebProvider.currentPageSale != ordersScrollWebProvider.maxPageSales" (click)="moveToNextSlideSale()"></ion-icon>
+              <ion-icon range-left name="ios-arrow-back" class="grey-arrow" *ngIf="ordersScrollWebProvider.currentPageSale == 0"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="grey-arrow" *ngIf="ordersScrollWebProvider.currentPageSale == ordersScrollWebProvider.maxPageSales"></ion-icon>
+            </ion-range>
+          </ion-col>
+        </ion-row>
+        <!--Para iphone-->
+        <ion-row no-margin color="gris" class="phoneButtons outer-list-header">
+          <ion-col col-12 col-sm-12 col-md-4 col-lg-4 class="contentTitle-phone">
+            <span class="textOrders-phone">{{ 'SalesOrd' | translate | uppercase }}</span>
+            <span class="current-page-orders">\({{ ordersScrollWebProvider.totalOfSales }}\)</span>
+          </ion-col>
+          <ion-col col-12 col-sm-12 col-md-8 col-lg-8 class="scroll-orders-phone">
+            <ion-range [(ngModel)]="valueRangeSales" debounce="0" (ionChange)="movePageRangeSale($event.value - 1)"
+              pin="true" min="1" max="{{ordersScrollWebProvider.maxPageSales + 1}}" snaps="true">
+              <ion-icon range-left class="current-page-orders-phone vertical">\({{ordersScrollWebProvider.currentPageSale + 1}}\/{{ordersScrollWebProvider.maxPageSales + 1}}\)</ion-icon>
+              <ion-icon range-left name="ios-arrow-back" class="white-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageSale != 0" (click)="moveToPreviousSlideSale()"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="white-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageSale != ordersScrollWebProvider.maxPageSales" (click)="moveToNextSlideSale()"></ion-icon>
+              <ion-icon range-left name="ios-arrow-back" class="grey-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageSale == 0"></ion-icon>
+              <ion-icon range-right name="ios-arrow-forward" class="grey-arrow-phone" *ngIf="ordersScrollWebProvider.currentPageSale == ordersScrollWebProvider.maxPageSales"></ion-icon>
+            </ion-range>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+
+      <!-- Spinner de carga -->
+      <div *ngIf="ordersScrollWebProvider.loadingSales" class="spinner-container">
+        <ion-spinner name="ios"></ion-spinner>
+        <p id="spinner-animated-text">{{ 'PreparingSalesList' | translate }}</p>
+      </div>
+
+      <!-- Contenedor de Ordenes de venta -->
+      <ion-row>
+        <ion-card class="background-card" *ngIf="!ordersScrollWebProvider.loadingSales" no-lines no-padding no-margin col-12 (swiperight)="moveToPreviousSlideSale()" (swipeleft)="moveToNextSlideSale()">
+          <ion-card-content>
+            <!--Para tablet-->
+            <ion-row center>
+              <p class="no-orders" *ngIf="ordersScrollWebProvider.totalOfSales == 0">{{'SalesNotFound' | translate }}</p>
+              <ion-col *ngFor="let saleAbstract of ordersScrollWebProvider.actualPageSale" col-12 col-sm-6 col-md-4 col-lg-3 no-padding no-margin>
+                <ion-card [ngClass]="saleAbstract.STATE == 0 ? 'wrapper-color-state-open' : saleAbstract.STATE == 2 ? 'wrapper-color-state-close' : saleAbstract.STATE == 1 ? 'wrapper-color-state-processing' : 'wrapper-color-state-danger'"
+                  style="position: relative;" no-padding no-margin>
+                  <button [ngClass]="saleAbstract.STATE == 0 ? 'icon-state-open' : saleAbstract.STATE == 2 ? 'icon-state-close' : saleAbstract.STATE == 1 ? 'icon-state-processing' : 'icon-state-danger'" ion-button clear>
+                    <ion-icon *ngIf="saleAbstract.STATE == 0" name="unlock" title="{{'StateOpen' | translate}}"></ion-icon>
+                    <ion-icon *ngIf="saleAbstract.STATE == 2" name="lock" title="{{'StateClose' | translate}}"></ion-icon>
+                    <ion-icon *ngIf="saleAbstract.STATE == 1" name="time" title="{{'StateProcessing' | translate}}"></ion-icon>
+                  </button>
+
+                  <div tappable (click)="loadOrder(saleAbstract.GUID)">
+                    <ion-card-header>
+                      {{ saleAbstract.ID }}
+                    </ion-card-header>
+                    <ion-card-content>
+                      <div #nameRequestor>{{ getNameRequestor(saleAbstract, nameRequestor) }}</div>
+                      <div>{{ ordersScrollWebProvider.getStatusTxt30(saleAbstract) }}</div>
+                      <div class="date">{{ saleAbstract.DATETIME_TO }}</div>
+                    </ion-card-content>
+                  </div>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-row>
+    </div>
+  </div>
+
+  <ion-fab bottom right>
+    <button clear ion-fab (click)="loadNewOrder()" mini>
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,11 @@
+{
+  "name": "testhipracrm",
+  "app_id": "",
+  "proxies": [
+    {
+      "path": "/mfp",
+      "proxyUrl": "http://localhost:9080/mfp"
+    }
+  ],
+  "type": "ionic-angular"
+}

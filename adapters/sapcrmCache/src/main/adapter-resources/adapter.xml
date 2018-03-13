@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Licensed Materials - Property of IBM
+	5725-I43 (C) Copyright IBM Corp. 2011, 2016. All Rights Reserved.
+	US Government Users Restricted Rights - Use, duplication or
+	disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<mfp:adapter name="sapcrmCache"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mfp="http://www.ibm.com/mfp/integration"
+	xmlns:sql="http://www.ibm.com/mfp/integration/sql">
+
+	<displayName>sapcrmCache</displayName>
+	<description>sapcrmCache</description>
+	<connectivity>
+		<connectionPolicy xsi:type="sql:SQLConnectionPolicy">
+			<!-- Example for using a JNDI data source, replace with actual data source name -->
+			<!-- <dataSourceJNDIName>sapcrm/jdbc/CRMDS</dataSourceJNDIName>  -->
+			
+			<!-- Example for using MySQL connector, do not forget to put the MySQL connector library in the project's lib folder -->
+			
+			<!-- Development environment -->
+			<!--
+			<dataSourceDefinition>
+				<driverClass>com.mysql.jdbc.Driver</driverClass>
+				<url>jdbc:mysql://192.168.99.100:3308/mobile_sapcrm</url>
+				<user>root</user>
+				<password>hipra00</password>
+			</dataSourceDefinition>-->
+			<dataSourceDefinition>
+				<driverClass>com.mysql.jdbc.Driver</driverClass>
+				<url>jdbc:mysql://localhost:3308/mobile_sapcrm?useSSL=false&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</url>
+				<user>root</user>
+				<password>hipra00</password>
+			</dataSourceDefinition>
+			
+
+			<!-- BluemixDev environment -->
+			<!-- <dataSourceDefinition>
+				<driverClass>com.mysql.jdbc.Driver</driverClass>
+				<url>jdbc:mysql://sl-eu-lon-2-portal1.1.dblayer.com:16869/mobile_sapcrm</url>
+				<user>admin</user>
+				<password>OLYIHUQDCRHOOHYS</password>
+			</dataSourceDefinition>-->
+
+			<!-- Produccion environment -->
+			<!--<dataSourceDefinition>
+				<driverClass>com.mysql.jdbc.Driver</driverClass>
+				<url>jdbc:mysql://TODO.dblayer.com:16869/mobile_sapcrm</url>
+				<user>admin</user>
+				<password>TODO</password>
+			</dataSourceDefinition>-->
+
+		</connectionPolicy>
+	</connectivity>
+   
+	<!-- READY -->
+    <procedure name="checkSync" secured="true" scope="UserLogin"/>
+	<procedure name="getLanguages" secured="true" scope="UserLogin"/>
+	<procedure name="getStatus"  secured="true" scope="UserLogin"/>
+	<procedure name="getFunctions" secured="true" scope="UserLogin"/><!--Funciones persona de contacto-->
+	<procedure name="getDepartments" secured="true" scope="UserLogin"/>
+	<procedure name="getGroups" secured="true" scope="UserLogin"/>
+	<procedure name="getCountries" secured="true" scope="UserLogin"/>
+	<procedure name="getRegions" secured="true" scope="UserLogin"/>
+	<procedure name="getMarketingAttributes" secured="true" scope="UserLogin"/><!--Campos de especies-->
+	<procedure name="getMarketingHeaders" secured="true" scope="UserLogin"/><!--tipos de especies-->
+	<procedure name="getCategories" secured="true" scope="UserLogin"/> <!--Categorias de actividades¿?-->
+	<procedure name="getOperationClasses" secured="true" scope="UserLogin"/><!--Tipos de actividades hipra-->
+	<procedure name="getTextClasses" secured="true" scope="UserLogin"/><!--Sin datos-->
+	<procedure name="getTextActClasses" secured="true" scope="UserLogin"/><!--Sin datos-->
+	<procedure name="getFICClasses" secured="true" scope="UserLogin"/><!--Title_key titulo partner-->
+	<procedure name="getObjectives" secured="true" scope="UserLogin"/><!--activities.InterlocutorTypes-->
+	<procedure name="getReasons" secured="true" scope="UserLogin"/><!--Sin datos-->
+	<procedure name="getReTypes" secured="true" scope="UserLogin"/><!--Lista de tipos de relaciones -->
+	<procedure name="getResult" secured="true" scope="UserLogin"/><!--Sin datos-->
+	<procedure name="getPaymentTerms" secured="true" scope="UserLogin"/><!-- -->
+	<procedure name="getPriceListType" secured="true" scope="UserLogin"/><!-- -->
+	<procedure name="getPriceList" secured="true" scope="UserLogin"/><!-- -->
+	<procedure name="getInterl" secured="true" scope="UserLogin"/><!--activityOperationClasses¿? -->
+    <procedure name="updateSyncDate" secured="true" scope="UserLogin"/>
+    <procedure name="getSyncDate" secured="true" scope="UserLogin"/>
+    <procedure name="insertVTest" secured="true" scope="UserLogin"/>
+	<procedure name="getProductsDeterminedUser" secured="true" scope="UserLogin"/><!---->
+    <procedure name="getProducts" secured="true" scope="UserLogin"/><!---->
+    <procedure name="getProductsCount" secured="true" scope="UserLogin"/><!-- -->
+	<!--TODO -->
+
+
+</mfp:adapter>

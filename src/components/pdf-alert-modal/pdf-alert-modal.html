@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-navbar color="primary"> 
+    <ion-title>
+        {{ 'SelectSectionsPDF' | translate }}
+    </ion-title>   
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding text-center>
+  <ion-list>
+
+  <ion-item>
+    <ion-label>{{ 'DataOrder' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkDatos" ></ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{ 'SellToParty' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkSolicitante" ></ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{ 'ShipToParty' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkDestinatario"></ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{ 'Distributor' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkDistribuidor"></ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{ 'Responsible' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkResponsable" ></ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{ 'Products' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkProductos" ></ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{ 'Notes' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkNotas"></ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{ 'Firm' | translate }}</ion-label>
+    <ion-checkbox [(ngModel)]="checks.checkFirma"></ion-checkbox>
+  </ion-item>
+</ion-list>             
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div style="text-align: center">
+    <ion-buttons class="ipadButtons">
+      <button ion-button icon-left outline color="primary" (click)="previewPDF()">
+        <ion-icon name="ios-document"></ion-icon>
+        {{ 'Generar' | translate }}
+      </button>  
+      <button ion-button icon-left outline color="primary" (click)="dismiss('cancel')">
+        <ion-icon name="close"></ion-icon>
+        {{ 'Cancel' | translate }}
+      </button>
+    </ion-buttons>
+    </div>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      {{title}}
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss('cancel')">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="onSearchInput($event)" placeholder="{{ 'Search' | translate }}"></ion-searchbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="loadingCount > 0">
+    <ion-row center>
+      <ion-col>
+        Loading data... &nbsp;&nbsp;
+        <ion-spinner></ion-spinner>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-item *ngFor="let option of data; let i = index">
+      <ion-label><span *ngIf="showKey === 'true'">{{option[key]}} - </span>{{option[label]}}</ion-label>
+      <ion-checkbox (click)="editValue(option)"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div style="text-align: center;">
+    <ion-buttons class="ipadButtons"> 
+      <button ion-button icon-left outline color="primary" (click)="dismiss('apply')">
+        <ion-icon name="checkmark"></ion-icon>
+        {{ 'Apply' | translate }}
+      </button>   
+      <button ion-button icon-left outline color="primary" (click)="dismiss('cancel')">
+        <ion-icon name="close"></ion-icon>
+        {{ 'Cancel' | translate }}
+      </button>       
+    </ion-buttons>
+    </div>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      {{title}}
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar placeholder="{{ 'Search' | translate }}" [formControl]="searchField"></ion-searchbar>
+</ion-header>
+
+<ion-content>
+  <ion-list radio-group [(ngModel)]="val" (ionChange)="dismiss()">
+    <ion-item *ngFor="let option of filteredOptions">
+      <ion-label><span *ngIf="showKey === 'true'">{{option[key]}} - </span>{{option[label]}}</ion-label>
+      <ion-radio [value]="option[key]"></ion-radio>
+    </ion-item>
+  </ion-list>
+</ion-content>

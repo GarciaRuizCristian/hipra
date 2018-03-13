@@ -1,0 +1,12 @@
+change src/declarations.d.ts import ts line
+
+ionic plugin rm cordova-plugin-mfp --save
+npm install ibm-mfp-web-sdk --save
+ionic state restore
+	
+on ionic.config.json:
+  "proxies": [
+  {
+    "path": "/mfp",
+    "proxyUrl": "https://localhost:9080/mfp"
+  }

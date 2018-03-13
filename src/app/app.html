@@ -1,0 +1,69 @@
+<ion-menu type="overlay" [content]="content">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-row>
+        <ion-col col-5>
+          <img src="assets/img/logo-menu.png" class="logo-menu">
+        </ion-col>
+        <ion-col class="ipadSync" col-7 style="text-align: right">
+          <ion-row class="sync-info">
+            {{ 'LastSync' | translate }}
+          </ion-row>
+          <ion-row class="sync-info">
+            {{user.lastSync}}
+          </ion-row>
+        </ion-col>
+        <ion-col class="iphoneSync" col-7 style="text-align: right">
+          <ion-row class="sync-info">
+            <ion-icon name="cloud-upload"></ion-icon>
+          </ion-row>
+          <ion-row class="sync-info">
+            {{user.lastSync}}
+          </ion-row>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="user-info">
+          <p>{{ user.displayName }}</p>
+        </ion-col>
+        <ion-col class="queue" *ngIf="queueProvider.tasks != null && queueProvider.tasks.length != 0"><!--*ngIf="pendingSync"-->
+          <button ion-button round outline (click)="openQueuePage()" menuClose  color="blanco">{{queueProvider.tasks?.length}} {{ 'Queue' | translate }}</button>
+        </ion-col>
+      </ion-row>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content no-bounce>
+    <!-- section 0 -->
+    <ion-list class="list-side-menu-top" no-lines>
+      <div *ngFor="let page of pages">
+
+        <div *ngIf="!page.authorizationGroup || user.authorizationGroup == page.authorizationGroup ">
+          <button *ngIf="page.section == 0" [class.active]="currentPage == page.component" class="side-menu-item" menuClose ion-item
+            (click)="openPage(page.component)">
+          <div class="mark"></div>
+          <ion-icon item-left [name]="page.icon"></ion-icon>
+          {{ page.title | translate }}
+          </button>
+        </div>
+
+      </div>
+    </ion-list>
+    <div class="line-menu-separator"></div>
+    <!-- section 1 -->
+    <ion-list class="list-side-menu-top" no-lines>
+      <div *ngFor="let page of pages">
+        <button tappable *ngIf="page.section == 1" [class.active]="currentPage == page.component" class="side-menu-item" menuClose ion-item
+          (click)="openPage(page.component)">
+          <div class="mark"></div>
+          <ion-icon item-left [name]="page.icon"></ion-icon>
+          {{ page.title | translate }}
+        </button>
+
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

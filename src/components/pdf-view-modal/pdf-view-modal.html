@@ -1,0 +1,33 @@
+<ion-header text-center>
+  <ion-navbar color="primary"> 
+    <ion-title>
+      {{ 'mailSubject' | translate}} 
+    </ion-title>   
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding text-center>
+                   <pdf-viewer [src]="pdfUrl" 
+                               [page]="page" 
+                               [original-size]="false"
+                               style="display: block;">
+
+                    </pdf-viewer>
+</ion-content>
+  
+<ion-footer>
+  <ion-toolbar>
+     <div style="text-align: center;">
+      <ion-buttons class="ipadButtons">    
+      <button color="primary" outline tapabble *ngIf="deviceInformation=='browser'" (click)="download()" ion-button icon-only>
+        <ion-icon name="md-archive"></ion-icon>
+        {{ 'Download' | translate}}
+      </button>
+      <button color="primary" outline tapabble *ngIf="deviceInformation!='browser'" ion-button icon-left (click)="sendPDF()">
+        <ion-icon name="ios-mail"></ion-icon>
+        {{ 'Enviar' | translate }}
+      </button>
+    </ion-buttons>  
+   </div> 
+  </ion-toolbar>
+</ion-footer> 

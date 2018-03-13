@@ -1,0 +1,504 @@
+<ion-header>
+  <ion-navbar color="primary">
+
+    <img class="header-logo" src="../../assets/img/logo-menu.png">
+
+    <ion-buttons end class="ipadButtons">
+      <button class="phoneButtonSpace" *ngIf="existOrder && isDuplicateable" ion-button icon-only (click)="duplicateOrder()" [color]="'light'">
+        <ion-icon  name="md-copy" ></ion-icon>
+        {{ 'DuplicateOrder' | translate}}
+      </button>
+      <button class="phoneButtonSpace" *ngIf="existOrder && this.order.STATUS_TAB[0].STATUS == 'E0002' && isDeleteable" (click)="delete()" ion-button icon-only [color]="'light'">
+        <ion-icon name="ios-trash-outline" ></ion-icon>
+        {{ 'Delete' | translate}}
+      </button>
+      <button (click)="flush()" *ngIf="this.order.STATUS_TAB[0].STATUS == 'E0002' && isSaveable" ion-button icon-only [color]="'light'">
+        <ion-icon name="md-checkmark"></ion-icon>
+        {{ 'Save' | translate}}
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end class="phoneButtons">
+      <button class="phoneButtonSpace" *ngIf="existOrder && isDuplicateable" ion-button icon-only (click)="duplicateOrder()" [color]="'light'">
+        <ion-icon  name="md-copy" ></ion-icon>
+      </button>
+      <button class="phoneButtonSpace" *ngIf="existOrder && isDeleteable" (click)="delete()" ion-button icon-only [color]="'light'">
+        <ion-icon name="ios-trash-outline" ></ion-icon>
+      </button>
+      <button (click)="flush()" *ngIf="this.order.STATUS_TAB[0].STATUS == 'E0002' && isSaveable" ion-button icon-only [color]="'light'">
+        <ion-icon name="md-checkmark"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+  <div class="second-navbar" padding>
+    <p>
+      {{ 'Order' | translate }} <span class="current-index"> | </span>
+      <span class="current-index" *ngIf="!loadingOrder && existOrder && isOrden">{{ 'Edit SalesOrder' | translate}}</span>
+      <span class="current-index" *ngIf="!loadingOrder && !existOrder && isOrden">{{ 'NewSalesOrder' | translate}}</span>
+      <span class="current-index" *ngIf="!loadingOrder && existOrder && !isOrden">{{ 'Edit Opportunity' | translate}}</span>
+      <span class="current-index" *ngIf="!loadingOrder && !existOrder && !isOrden">{{ 'NewOpportunity' | translate}}</span>
+    </p>
+  </div>
+</ion-header>
+
+
+<ion-content padding>
+  <!-- Spinner de carga -->
+  <div *ngIf="loadingOrder" class="spinner-container">
+    <ion-spinner name="ios"></ion-spinner>
+  </div>
+
+  <!-- Tipo de orden -->
+  <ion-list class="outer-list" [style.display]="loadingOrder ? 'none' : 'block'">
+    <ion-list-header no-margin color="gris" class="outer-list-header">
+      <div *ngIf="existOrder && isOrden">{{ 'SalesOrder' | translate}}</div>
+      <div *ngIf="!existOrder && isOrden">{{ 'NewSalesOrder' | translate}}</div>
+      <div *ngIf="existOrder && !isOrden">{{ 'Opportunity' | translate}}</div>
+      <div *ngIf="!existOrder && !isOrden">{{ 'NewOpportunity' | translate}}</div>
+    </ion-list-header>
+
+
+    <!-- Expandible General -->
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="generalOpened = !generalOpened" [class.opened]="generalOpened">
+        {{'General' | translate }} (*)
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!generalOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="generalOpened"></ion-icon>
+      </ion-list-header>
+
+      <!-- div para cerrar o abrir todos los componentes que esten dentro del expandible -->
+      <div [class.hidden]="!generalOpened">
+
+        <!-- Operacion de la orden -->
+        <ion-row center>
+          <ion-col col-12 col-sm-6>
+            <ion-list>
+              <ion-item>
+                <ion-label floating color="gris">{{ 'Operation' | translate }}</ion-label>
+                <ion-input disabled="true" type="text" [(ngModel)]="operation[order.HEADER.PROCESS_TYPE]"></ion-input>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+
+          <!-- Estado de la orden -->
+          <ion-col col-12 col-sm-6>
+            <ion-list>
+              <ion-item class="statusText">
+                <ion-label floating color="gris">{{ 'Status' | translate }}</ion-label>
+                <ion-input disabled="true" type="text" [ngModel]="getStatusTxt30(this.order.STATUS_TAB[0].STATUS)"></ion-input>
+              </ion-item>  
+            </ion-list>
+          </ion-col>
+        </ion-row>
+
+        <!-- Forma de pago de la orden si eres de Brasil -->
+        <ion-row center *ngIf="userLoged && userLoged.DATA_ADDRESS.COUNTRY == 'BR'">
+          <ion-col col-12 col-sm-6>
+            <ion-list>
+              <ion-item (click)="changeSelectedPaymentTerm()">
+                <ion-label floating color="gris">{{'PaymentsTerms' | translate }} (*)</ion-label>
+                <ion-input readonly [(ngModel)]="currentPaymentTerm && currentPaymentTerm.DESCRIPTION"></ion-input> 
+                <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+
+        <!-- Fecha de la orden -->
+        <div *ngFor="let fecha of order.DATE">
+          <div *ngIf="fecha.APPT_TYPE == 'ORDERACTUAL'">
+            <ion-row>
+              <ion-col>
+                <ion-list>
+                  <ion-item>
+                    <ion-label floating color="gris">{{ 'Date' | translate }}</ion-label>
+                    <ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD MM YYYY" [(ngModel)]="fecha.DATE_FROM"></ion-datetime>
+                  </ion-item>
+                </ion-list>
+              </ion-col>
+
+              <ion-col>
+                <ion-list>
+                  <ion-item>
+                    <ion-label floating color="gris">{{ 'Time' | translate }}</ion-label>
+                    <ion-datetime (ionChange)="fecha.TIME_FROM = (fecha.TIME_FROM + ':00').slice(0,8)" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" displayFormat="HH:mm"
+                      pickerFormat="HH mm" [(ngModel)]="fecha.TIME_FROM"></ion-datetime>
+                  </ion-item>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+          </div>
+        </div>
+
+        <!-- Boton de generarPDF para los estados 'Concluido' y 'En tratamiento'-->
+        <div padding class="adder-button" *ngIf="this.order.STATUS_TAB[0].STATUS == 'E0004' || this.order.STATUS_TAB[0].STATUS == 'E0003'">  
+          <!-- Spinner de carga -->
+          <div *ngIf="loadingMakePDF" class="spinner-container">
+            <ion-spinner name="ios"></ion-spinner>
+          </div>
+          <button *ngIf="!loadingMakePDF" ion-button color="gris" outline (click)="showPdfAlert()"> 
+            {{ 'MakePDF' | translate }}
+          </button>
+        </div>
+      </div>
+    </ion-list>
+
+    <!-- Expandible Solicitante -->
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="sellToPartyOpened = !sellToPartyOpened" [class.opened]="sellToPartyOpened">
+        {{'SellToParty' | translate }} (*)
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!sellToPartyOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="sellToPartyOpened"></ion-icon>
+      </ion-list-header>
+
+      <!-- div para cerrar o abrir todos los componentes que esten dentro del expandible -->
+      <div [class.hidden]="!sellToPartyOpened">
+        
+        <!-- Solicitante -->
+        <ion-row>
+          <ion-col col-12 col-sm-6>
+            <ion-list>
+              <ion-item (click)="!loadingOption && !loadingRequestors && changeSelectedRequestor();">
+                <ion-label floating color="gris">{{'Partner' | translate }}</ion-label>
+                <ion-input [class.optionsDisabled]="loadingOption || loadingRequestors" required readonly [(ngModel)]="requestor.FULLNAME"></ion-input>
+                <!-- Boton Ir A Contacto -->
+                <button *ngIf="requestor.FULLNAME" class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingRequestors && watchPartner(requestor.PARTNER_NO);" name="ios-person-outline"></ion-icon></button>
+                <!-- Boton Eliminar Solicitante desactivado -->
+                <button *ngIf="requestor.FULLNAME" class="trash-button transparent" item-right (click)="$event.stopPropagation();"><ion-icon name="ios-trash-outline"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="loadingRequestors">
+          <ion-col col-12>
+            <div class="spinner-container">
+              <ion-spinner name="ios"></ion-spinner>
+            </div>
+          </ion-col>
+        </ion-row> 
+       </div>
+    </ion-list>
+
+    <!-- Expandible Destinatario de Mercancias si el solicitante es del grupo 'YX' y tiene mas de una relacion "tiene como destinatario de mercancias" y no es una oportunidad (el destinatario es distinto al solicitante)
+    o si no eres de Brasil ni es una oportunidad (en Brasil y en orden de venta, el destinatario es el mismo que el solicitante) -->
+    <ion-list padding class="inner-list" *ngIf="(this.requestorFull && this.requestorFull.GROUP == 'YX' && this.addresseesFromRequestor.length > 1 && this.isOrden) || (this.userLoged && this.userLoged.DATA_ADDRESS.COUNTRY != 'BR' && this.isOrden)">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="shipToPartyOpened = !shipToPartyOpened" [class.opened]="shipToPartyOpened">
+        {{'ShipToParty' | translate }}  (*)
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!shipToPartyOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="shipToPartyOpened"></ion-icon>
+      </ion-list-header>
+
+      <!-- div para cerrar o abrir todos los componentes que esten dentro del expandible -->
+      <div [class.hidden]="!shipToPartyOpened">
+        <!-- Destinatario -->
+        <ion-row>
+          <ion-col col-12 col-sm-6>
+            <ion-list>
+              <ion-item (click)="!loadingOption && (requestor.FULLNAME ? changeSelectedAddressees() : utils.showAlertInfo('Information', 'RequestorNeed'));">
+                <ion-label floating color="gris">{{'Partner' | translate }}</ion-label>
+                <ion-input [class.optionsDisabled]="loadingOption" required readonly [(ngModel)]="addressee.FULLNAME"></ion-input>
+                <!-- Boton Ir A Contacto -->
+                <button *ngIf="addressee.FULLNAME" class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && watchPartner(addressee.PARTNER_NO);" name="ios-person-outline"></ion-icon></button>
+                <!-- Boton Eliminar Destinatario desactivado -->
+                <button *ngIf="addressee.FULLNAME" class="trash-button transparent" item-right (click)="$event.stopPropagation();"><ion-icon name="ios-trash-outline"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-list>
+
+    <!-- Expandible Distribuidor si es una Oportunidad -->
+    <ion-list padding class="inner-list" *ngIf="!isOrden">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="distributorOpened = !distributorOpened" [class.opened]="distributorOpened">
+        {{'Distributor' | translate }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!distributorOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="distributorOpened"></ion-icon>
+      </ion-list-header>
+
+      <!-- div para cerrar o abrir todos los componentes que esten dentro del expandible -->
+      <div [class.hidden]="!distributorOpened">
+        <!-- Distribuidor -->
+        <ion-row *ngIf="distributor.FULLNAME">
+          <ion-col col-12 col-sm-6>
+            <ion-list>
+              <ion-item (click)="!loadingOption && !loadingDistributors && changeSelectedDistributor()">
+                <ion-label floating color="gris">{{'Partner' | translate }}</ion-label>
+                <ion-input [class.optionsDisabled]="loadingOption || loadingDistributors" required readonly [(ngModel)]="distributor.FULLNAME"></ion-input>
+                <!-- Boton Ir A Contacto -->
+                <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingDistributors && watchPartner(distributor.PARTNER_NO);" name="ios-person-outline"></ion-icon></button>
+                <!-- Boton Eliminar Distribuidor -->
+                <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingDistributors && deleteData(distributor,'distributor')" name="ios-trash-outline"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+
+        <!-- Boton Aniadir Distribuidor -->
+         <ion-row *ngIf="!distributor.FULLNAME">
+          <ion-col col-12>
+            <div *ngIf="loadingDistributors" class="spinner-container">
+              <ion-spinner name="ios"></ion-spinner>
+            </div>
+            <div *ngIf="!loadingDistributors" padding class="adder-button">
+              <button ion-button color="gris" outline (click)="!loadingOption && changeSelectedDistributor()">{{ 'AddDistributor' | translate }}</button>
+            </div>
+          </ion-col>
+        </ion-row> 
+      </div>
+    </ion-list>
+
+    <!-- Expandible Empleado Responsable -->
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="employeeResponsibleOpened = !employeeResponsibleOpened" [class.opened]="employeeResponsibleOpened">
+        {{'EmployeeResponsible' | translate }}  (*)
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!employeeResponsibleOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="employeeResponsibleOpened"></ion-icon>
+      </ion-list-header>
+
+      <!-- div para cerrar o abrir todos los componentes que esten dentro del expandible -->
+      <div [class.hidden]="!employeeResponsibleOpened">
+        <ion-row>
+          <!-- Empleado Responsable -->
+          <ion-col col-12 col-sm-6 *ngFor="let employee of employeeResponsible; let i=index">
+            <ion-list>
+              <ion-item (click)="!loadingOption && !loadingEmployeeResponsibles && addEmployeeResponsible(i, employee)">
+                <ion-input [class.optionsDisabled]="loadingOption || loadingEmployeeResponsibles" required readonly [value]="employee.FULLNAME"></ion-input>
+                <!-- Boton Ir A Contacto -->
+                <button class="trash-button" item-right><ion-icon (click)="$event.stopPropagation();!loadingOption && !loadingEmployeeResponsibles && watchPartner(employee.PARTNER_NO);" name="ios-person-outline"></ion-icon></button>
+                <!-- Boton Eliminar Responsable -->
+                <button class="trash-button" item-right><ion-icon name="ios-trash-outline" (click)="$event.stopPropagation();!loadingOption && !loadingEmployeeResponsibles && deleteData(employee,'employeeResponsible',i)"></ion-icon></button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+
+          <!-- Boton Aniadir Empleado Responsable -->
+          <ion-col col-12>
+            <div *ngIf="loadingEmployeeResponsibles" class="spinner-container">
+              <ion-spinner name="ios"></ion-spinner>
+            </div>
+            <div *ngIf="!loadingEmployeeResponsibles" padding class="adder-button">
+              <button ion-button color="gris" outline (click)="!loadingOption && addEmployeeResponsible()">{{ 'AddEmployeeResponsible' | translate }}</button>
+            </div>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-list>
+
+    <!-- Expandible Productos -->
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="productsOpened = !productsOpened" [class.opened]="productsOpened">
+        {{'Products' | translate }} (*)
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!productsOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="productsOpened"></ion-icon>
+        <!-- Total del Precio de los Productos -->
+        <ion-badge class="inner-list-header priceTotal">{{priceTotalProducts}}</ion-badge>
+      </ion-list-header>
+
+      <!-- div para cerrar o abrir todos los componentes que esten dentro del expandible -->
+      <div id="addProduct" [class.hidden]="!productsOpened">
+        <!-- Para iPhone -->
+        <ion-row *ngIf="!isIpad && allProducts.length > 0">
+          <ion-col col-12 *ngFor="let product of allProducts; let i = index">
+            <ion-card>
+              <ion-card-header>
+                <ion-row center>
+                  <!-- Producto -->
+                  <ion-col col-12 col-md-4 class="iPhonePlatform">
+                    <ion-list>
+                      <ion-item (click)="!loadingOption && changeSelectedProduct(allProducts, i)"> 
+                        <ion-label floating color="gris">{{ 'Product' | translate }}</ion-label>
+                        <ion-input [class.optionsDisabled]="loadingOption" [class.erroneousProduct]="product.ERROR_MINIMUM_PRICE" readonly [(ngModel)]="allProducts[i].DESCRIPTION"></ion-input>
+                        <!-- Boton Eliminar Producto -->
+                        <button class="trash-button productiPhonePlatform" item-right><ion-icon (click)="$event.stopPropagation();deleteData(product,'product')" name="ios-trash-outline"></ion-icon></button>
+                      </ion-item>
+                    </ion-list> 
+                  </ion-col>
+                  
+                  <!-- Unidades -->
+                  <ion-col col-6 col-md-2 class="iPhonePlatform">
+                    <ion-list>
+                      <ion-item>
+                        <ion-label floating color="gris">{{ 'Units' | translate }} (*)</ion-label>
+                        <ion-input [class.erroneousProduct]="product.ERROR_MINIMUM_PRICE" placeholder="0" [(ngModel)]="product.QUANTITY" (change)="calculateNetPrice(product)" type="number"></ion-input>
+                      </ion-item>
+                    </ion-list> 
+                  </ion-col>
+
+                  <!-- Precio -->
+                  <ion-col col-6 col-md-2 class="iPhonePlatform">
+                    <ion-list>
+                      <ion-item>
+                        <ion-label floating color="gris">{{ 'Price' | translate }}</ion-label>
+                        <ion-input [class.erroneousProduct]="product.ERROR_MINIMUM_PRICE" placeholder="0" [(ngModel)]="product.NET_PRICE" (change)="calculateNetPrice(product)" type="number"></ion-input>
+                      </ion-item>
+                    </ion-list> 
+                  </ion-col>
+                  
+                  <!-- Bonificacion -->
+                  <ion-col col-12 col-md-2 class="iPhonePlatform">
+                    <ion-list>
+                      <ion-item>
+                          <ion-label col-6 color="gris">{{ 'Bonification' | translate }}</ion-label> 
+                          <ion-toggle col-6 [ngModel]="product.ITM_TYPE == 'ZBON'" (ionChange)="applyDiscount(product , $event)" checked="false"></ion-toggle> 
+                      </ion-item>
+                    </ion-list>
+                  </ion-col>
+
+                  <!-- Total -->
+                  <ion-col col-12 col-md-2 class="iPhonePlatform">
+                    <ion-list>
+                      <ion-item>
+                        <ion-label floating color="gris">{{ 'Total' | translate }}</ion-label>
+                        <ion-input disabled="true" [(ngModel)]="product.NET_VALUE" type="number"></ion-input>
+                      </ion-item>
+                    </ion-list> 
+                  </ion-col>
+                </ion-row>
+              </ion-card-header>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <!-- Para el resto de plataformas -->
+        <ion-row *ngIf="isIpad && allProducts.length > 0">
+          <ion-col col-12 *ngFor="let product of allProducts; let i = index">
+            <ion-card>
+              <ion-card-header>
+                <ion-row center>
+                  <!-- Producto -->
+                  <ion-col col-12 col-sm-7 class="otherPlatform">
+                    <ion-list>
+                      <ion-item (click)="!loadingOption && changeSelectedProduct(allProducts, i)">
+                        <ion-label floating color="gris">{{ 'Product' | translate }}</ion-label>
+                        <ion-input [class.optionsDisabled]="loadingOption" [class.erroneousProduct]="product.ERROR_MINIMUM_PRICE" readonly [(ngModel)]="allProducts[i].DESCRIPTION"></ion-input>
+                      </ion-item>
+                    </ion-list>
+                  </ion-col>
+                  
+                  <!-- Unidades -->
+                  <ion-col col-6 col-sm-1 class="otherPlatform">
+                    <ion-item class="otherPlatform">
+                      <ion-label stacked color="gris">{{ 'Units' | translate }} (*)</ion-label>
+                      <ion-input [class.erroneousProduct]="product.ERROR_MINIMUM_PRICE" placeholder="0" [(ngModel)]="product.QUANTITY" (change)="calculateNetPrice(product)" type="number"></ion-input>
+                    </ion-item>
+                  </ion-col>
+
+                  <!-- Precio -->
+                  <ion-col col-6 col-sm-1 class="otherPlatform">
+                    <ion-item class="otherPlatform">
+                      <ion-label stacked color="gris">{{ 'Price' | translate }}</ion-label>
+                      <ion-input [class.erroneousProduct]="product.ERROR_MINIMUM_PRICE" placeholder="0" [(ngModel)]="product.NET_PRICE" (change)="calculateNetPrice(product)" type="number"></ion-input>
+                    </ion-item>
+                  </ion-col>
+
+                  <!-- Bonificacion -->
+                  <ion-col col-12 col-sm-1 class="otherPlatform">
+                    <ion-item class="otherPlatform">
+                      <ion-label floating color="gris">{{ 'Bonification' | translate }}</ion-label> 
+                      <ion-input disabled="true" class="bonification-toggle" value="&#10003;" [class.validated]="isChecked(product)" (click)="applyDiscount(product , $event)"></ion-input>
+                    </ion-item>
+                  </ion-col>
+
+                  <!-- Total -->
+                  <ion-col col-12 col-sm-2 class="otherPlatform">
+                    <ion-item class="otherPlatform">
+                      <ion-label floating color="gris">{{ 'Total' | translate }}</ion-label>
+                      <ion-input disabled="true" [(ngModel)]="product.NET_VALUE" type="number"></ion-input>
+                      <!-- Boton Eliminar Producto -->
+                      <button class="trash-button productOtherPlatform" item-right><ion-icon (click)="$event.stopPropagation();deleteData(product,'product')" name="ios-trash-outline"></ion-icon></button>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+              </ion-card-header>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <!-- Boton Aniadir Producto -->
+        <ion-row>
+          <ion-col col-12>
+            <div padding class="adder-button">
+              <button ion-button color="gris" outline (click)="!loadingOption && (requestor.FULLNAME ? addProduct() : utils.showAlertInfo('Information', 'RequestorNeed'));">{{ 'AddProduct' | translate }}</button>
+            </div>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-list>
+    
+    <!-- Expandible Firma -->
+    <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="signatureOpened = !signatureOpened" [class.opened]="signatureOpened">
+        {{'Firm' | translate }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!signatureOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="signatureOpened"></ion-icon>
+      </ion-list-header>
+
+      <div [class.hidden]="!signatureOpened">
+        <!-- Firma -->
+        <ion-card class="card-signaturePad">
+          <signature-pad [options]="signaturePadOptions"><canvas></canvas></signature-pad>
+        </ion-card>
+
+        <!-- Boton Limpiar Firma -->
+        <ion-row>
+          <ion-col col-12>
+            <div padding class="adder-button">
+              <button ion-button color="gris" outline (click)="drawClear()">{{ 'Clean' | translate }}</button>
+            </div>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-list>
+
+    
+
+    <!-- Expandible Notas -->
+     <ion-list padding class="inner-list">
+      <ion-list-header color="gris02" class="inner-list-header" (click)="notesOpened = !notesOpened" [class.opened]="notesOpened">
+        {{'Notes' | translate | uppercase }}
+        <ion-icon name="ios-arrow-down" class="arrow" *ngIf="!notesOpened"></ion-icon>
+        <ion-icon name="ios-arrow-up" class="arrow" *ngIf="notesOpened"></ion-icon>
+      </ion-list-header> 
+
+      <!-- ion-row para cerrar o abrir todos los componentes que esten dentro del expandible -->
+      <ion-row id="addNota" [class.hidden]="!notesOpened">
+        <!-- Notas -->
+        <div style="width: 100%" *ngFor="let nota of allNotes; let i = index;">
+          <!-- Notas != 'Z005', ya que ese 'TDID' esta reservado para la firma -->
+          <ion-col col-12 *ngIf="nota.TDID != 'Z005'">
+            <ion-card (click)="!loadingOption && editNota(nota)">
+              <div *ngFor="let typeNote of textClass">
+                <div *ngIf="nota.TDID == typeNote.TDID">
+                  <ion-card-header>
+                    <ion-item>
+                      <span class="noteTitle">{{ 'Note' | translate }} {{i+1}}:</span>
+                      <button class="trash-button" item-right (click)="$event.stopPropagation();!loadingOption && deleteData(nota,'note')"><ion-icon name="ios-trash-outline"></ion-icon></button>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label class="noteType">{{typeNote.TDTEXT}}</ion-label>
+                    </ion-item>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-item>
+                      <ion-label class="noteContent">{{ nota.TDLINE }}</ion-label>
+                    </ion-item>
+                  </ion-card-content>
+                </div>
+              </div>
+            </ion-card>
+          </ion-col>
+        </div>
+        <!-- Boton Aniadir Nota -->  
+        <ion-col col-12>
+          <div class="adder-button" padding>
+            <button ion-button color="gris" (click)="!loadingOption && editNota()" outline>{{ 'AddNota' | translate }}</button>
+          </div>
+        </ion-col>        
+      </ion-row>
+    </ion-list> 
+  </ion-list>
+</ion-content>

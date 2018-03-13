@@ -1,0 +1,50 @@
+page-login {
+
+    .list-ios > .item-block:first-child{
+        border-top: 0px;
+    }
+
+    .list-ios{
+        margin: 0px;
+        text-align: -webkit-center;
+    }
+
+    .logo-container{
+        margin-top: 12%;
+        margin-bottom: 0%;
+        text-align: center;
+        ion-img{
+            width: 180px;
+            height: 180px;
+            background-color: transparent;
+        }
+    }
+
+    .list-ios > .item-block:first-child{
+        max-width: 300px;
+    }
+
+    .button-container{
+        max-width: 300px;
+        font-family: "Roboto-Medium";
+        margin: auto;
+    }
+
+    .forgot-password{
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .error-message{
+        margin-top: 10px;
+        text-align: center;
+        font-size: 16px;
+        color: #f53d3d;
+    }
+
+    ion-item{
+        ion-input{
+            font-family: "Roboto-Medium";
+        }
+    }
+}

@@ -1,0 +1,52 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>
+            {{'EditRelation' | translate}}
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="dismiss('cancel')">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding [formGroup]="form">
+
+    <ion-list>
+        <ion-item (click)="!loadingRelations && selectRelationType()">
+            <ion-label floating [color]="(form.controls.relation.errors && form.controls.relation.touched) ? 'danger' : 'gris'">{{ 'Relation' | translate }}</ion-label>
+            <ion-input [class.partnersDisabled]="loadingRelations" required readonly [(ngModel)]="selectedRelationTypeName" formControlName="relation"></ion-input>
+            <button class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+        </ion-item>
+    </ion-list>
+
+    <ion-list>
+        <ion-item (click)="!loadingRelations && selectRelationPartner()">
+            <ion-label floating [color]="(form.controls.partner.errors && form.controls.partner.touched) ? 'danger' : 'gris'">{{ 'Partner' | translate }}</ion-label>
+            <ion-input [class.partnersDisabled]="loadingRelations" required readonly [(ngModel)]="selectedRelationPartnerName" formControlName="partner"></ion-input>
+            <button *ngIf="!loadingRelations" class="select-arrow-button" item-right><ion-icon name="ios-arrow-dropdown"></ion-icon></button>
+            <button *ngIf="loadingRelations" class="spinner-relations" item-right>
+                <ion-spinner name="ios"></ion-spinner>
+            </button>
+        </ion-item>
+    </ion-list>
+
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar>
+        <div style="text-align: center">
+            <ion-buttons class="ipadButtons">
+                <button ion-button icon-left outline color="primary" (click)="saveRelation()">
+                    <ion-icon name="ios-document"></ion-icon>
+                    {{ 'Save' | translate }}
+                 </button>
+                <button ion-button icon-left outline color="primary" (click)="dismiss('cancel')">
+                    <ion-icon name="close"></ion-icon>
+                    {{ 'Cancel' | translate }}
+                </button>
+            </ion-buttons>
+        </div>
+    </ion-toolbar>
+</ion-footer>

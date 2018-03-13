@@ -1,0 +1,34 @@
+<ion-content padding>
+
+
+  <div class="logo-container">
+    <ion-img src="assets/img/icon.png"></ion-img>
+  </div>
+
+  <ion-list>
+
+    <ion-item>
+      <ion-label floating color="gris">{{'UserName' | translate}}:</ion-label>
+      <ion-input autocapitalize="none" type="text" [(ngModel)]="username"></ion-input>
+    </ion-item>
+
+  </ion-list>
+  <ion-list>
+
+    <ion-item>
+      <ion-label floating color="gris">{{'Password' | translate}}:</ion-label>
+      <ion-input type="password" [(ngModel)]="password" (keyup.enter)="login()"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <div padding class="button-container">
+    <button (click)="login()" round ion-button color="primary" block>{{'Login' | translate | uppercase}}</button>
+  </div>
+
+      <div class="forgot-password">
+        <a href="https://mypass.hipra.com/sspr/private/Login" target="_blank">{{'ForgotPassword'| translate}}</a>
+      </div>
+
+      <div class="error-message">{{errorMsg}}</div>    
+
+</ion-content>

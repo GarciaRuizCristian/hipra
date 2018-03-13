@@ -1,0 +1,451 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle start [color]="'light'">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <img class="header-logo" src="../../assets/img/logo-menu.png">
+
+    <ion-buttons end class="ipadButtons">
+      <button class="phoneButtonSpace" ion-button icon-left (click)="refresh()" [color]="pendingSync ? 'danger' : 'light'">
+        <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+        {{ 'Update' | translate }}
+      </button>
+      <button class="phoneButtonSpace" *ngIf="!filter.has" ion-button icon-left (click)="activitiesFilter($event)" [color]="'light'">
+        <ion-icon name="ios-funnel"></ion-icon>
+        {{ 'Filter' | translate }}
+        <!--ion-icon *ngIf="filter.has" name="md-funnel"></ion-icon-->
+      </button>
+
+      <ion-chip class="chip-button" *ngIf="filter.has" #chip2>
+        <button color="dark" ion-button clear (click)="filterClear()">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+        <button class="filter-button" no-margin no-padding item-right clear (click)="activitiesFilter($event)">
+          <ion-icon class="chip-icon" name="ios-funnel" color="primary"></ion-icon>
+        </button>
+      </ion-chip>
+    </ion-buttons>
+
+    <ion-buttons end class="phoneButtons">
+      <button class="phoneButtonSpace" ion-button icon-only (click)="refresh()" [color]="pendingSync ? 'danger' : 'light'">
+        <ion-icon [class.ion-spin-animation]="doingSync" name="sync"></ion-icon>
+      </button>
+      <button class="phoneButtonSpace" *ngIf="!filter.has" ion-button icon-only (click)="activitiesFilter($event)" [color]="'light'">
+        <ion-icon name="ios-funnel"></ion-icon>
+        <!--ion-icon *ngIf="filter.has" name="md-funnel"></ion-icon-->
+      </button>
+
+      <ion-chip class="chip-button" *ngIf="filter.has" #chip2>
+        <button color="dark" ion-button clear (click)="filterClear()">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+        <button class="filter-button" no-margin no-padding item-right clear (click)="activitiesFilter($event)">
+          <ion-icon class="chip-icon" name="ios-funnel" color="primary"></ion-icon>
+        </button>
+      </ion-chip>
+    </ion-buttons>
+
+  </ion-navbar>
+
+  <div class="second-navbar">
+    <p class="navigation">
+      {{ 'Activities' | translate }}
+      <span class="contacts-number">\({{calendarWebProvider.totalFilteredActivities}}\)</span>
+    </p>
+    <p class="view-week" (click)="goToToday()">
+      <ion-icon ios="ios-calendar-outline"></ion-icon>
+      <span class="ipadButtons">{{ 'Today' | translate }}</span>
+      <span class="phoneButtons">{{ 'Today' | translate }}</span>
+    </p>
+    <p class="view-week" (click)="switchToMonth()" *ngIf="isDayView || isWeekView">
+      <ion-icon ios="ios-calendar-outline"></ion-icon>
+      <span class="ipadButtons">{{ 'ViewMonth' | translate }}</span>
+      <span class="phoneButtons">{{ 'ViewMonthShort' | translate }}</span>
+    </p>
+    <p class="view-week" (click)="switchToWeek()" *ngIf="isDayView || isMonthView">
+      <ion-icon ios="ios-calendar-outline"></ion-icon>
+      <span class="ipadButtons">{{ 'ViewWeek' | translate }}</span>
+      <span class="phoneButtons">{{ 'ViewWeekShort' | translate }}</span>
+    </p>
+  </div>
+
+</ion-header>
+
+<ion-content padding no-bounce>
+
+  <div *ngIf="loadingActivities" class="spinner-container">
+    <ion-spinner name="ios"></ion-spinner>
+    <p id="spinner-animated-text">{{ 'PreparingActivitiesList' | translate }}</p>
+  </div>
+
+  <div class="wrapper" *ngIf="!loadingActivities && isWeekView" (swipeleft)="calendarWebProvider.moveToNextWeek()" (swiperight)="calendarWebProvider.moveToPreviousWeek()">
+
+    <ion-list class="outer-list">
+      <ion-list-header no-margin color="gris" class="outer-list-header">
+        <ion-icon name="ios-arrow-back" class="outer-arrow" (click)="calendarWebProvider.moveToPreviousWeek()"></ion-icon>
+        {{ calendarWebProvider.getCurrentWeekStartingMonthString() | translate | uppercase}} {{ calendarWebProvider.getCurrentWeekStartingDay()}}
+        - {{ calendarWebProvider.getCurrentWeekEndingMonthString() | translate | uppercase}} {{ calendarWebProvider.getCurrentWeekEndingDay()}}
+        <span class="contacts-number">\({{calendarWebProvider.getCurrentWeek().getTotalWeekActivities()}}\)</span>
+        <ion-icon name="ios-arrow-forward" class="outer-arrow" (click)="calendarWebProvider.moveToNextWeek()"></ion-icon>
+      </ion-list-header>
+
+      <div *ngIf="!calendarWebProvider.weekActivitiesLoaded" class="spinner-container">
+        <ion-spinner name="ios"></ion-spinner>
+        <p id="spinner-animated-text">{{ 'PreparingActivitiesList' | translate }}</p>
+      </div>
+
+      <ion-row *ngIf="calendarWebProvider.weekActivitiesLoaded">
+        <ion-col col-12 col-sm>
+          <ion-list class="inner-list">
+            <ion-list-header color="gris01" class="inner-list-header" (click)="weekdayPressed(1)" [class.opened]="mondayOpened">
+              {{calendarWebProvider.CurrentWeek.Monday.getDay()}} - {{ 'Monday' | translate | uppercase }}
+              <span class="contacts-number">\({{calendarWebProvider.CurrentWeek.Monday.getTotalActivities()}}\)</span>
+              <ion-icon name="ios-arrow-down" class="phoneButtons arrow" *ngIf="!mondayOpened"></ion-icon>
+              <ion-icon name="ios-arrow-up" class="phoneButtons arrow" *ngIf="mondayOpened"></ion-icon>
+              <ion-icon name="ios-keypad-outline" class="ipadButtonsKeypad arrow"></ion-icon>
+            </ion-list-header>
+            <div *ngIf="mondayOpened">
+              <ion-card class="activity-card" no-padding no-margin *ngFor="let activity of calendarWebProvider.CurrentWeek.Monday.Activities; let i = index">
+                <div [ngClass]="activity.STATE == 0 ? 'wrapper-color-state-open' : activity.STATE == 1 ? 'wrapper-color-state-close' : 'wrapper-color-state-danger'"
+                  [class.repeated]="calendarWebProvider.isActivityRepeatedWeek(activity,1)">
+                  <div class="background-card">
+                    <div tappable (click)="loadActivity(activity.ACTIVITY_GUID)">
+                      <ion-card-content>
+                        <p class="activity-title">{{ activity.DESCRIPTION }}</p>
+                        <p class="activity-operation">{{ getEvento(activity.OPERATION) | translate}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_FROM | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_TO | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-contact">{{ getActivityContact(activity) }}</p>
+                      </ion-card-content>
+                    </div>
+                  </div>
+                </div>
+              </ion-card>
+            </div>
+          </ion-list>
+        </ion-col>
+
+
+
+
+
+
+        <ion-col col-12 col-sm>
+          <ion-list class="inner-list">
+            <ion-list-header color="gris01" class="inner-list-header" (click)="weekdayPressed(2)" [class.opened]="latestActivitiesOpened">
+              {{calendarWebProvider.CurrentWeek.Tuesday.getDay()}} - {{ 'Tuesday' | translate | uppercase }}
+              <span class="contacts-number">\({{calendarWebProvider.CurrentWeek.Tuesday.getTotalActivities()}}\)</span>
+              <ion-icon name="ios-arrow-down" class="phoneButtons arrow" *ngIf="!tuesdayOpened"></ion-icon>
+              <ion-icon name="ios-arrow-up" class="phoneButtons arrow" *ngIf="tuesdayOpened"></ion-icon>
+              <ion-icon name="ios-keypad-outline" class="ipadButtonsKeypad arrow"></ion-icon>
+            </ion-list-header>
+            <div *ngIf="tuesdayOpened">
+              <ion-card class="activity-card" no-padding no-margin *ngFor="let activity of calendarWebProvider.CurrentWeek.Tuesday.Activities; let i = index">
+                <div [ngClass]="activity.STATE == 0 ? 'wrapper-color-state-open' : activity.STATE == 1 ? 'wrapper-color-state-close' : 'wrapper-color-state-danger'"
+                  [class.repeated]="calendarWebProvider.isActivityRepeatedWeek(activity,2)">
+                  <div class="background-card">
+                    <div tappable (click)="loadActivity(activity.ACTIVITY_GUID)">
+                      <ion-card-content>
+                        <p class="activity-title">{{ activity.DESCRIPTION }}</p>
+                        <p class="activity-operation">{{ getEvento(activity.OPERATION) | translate}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_FROM | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_TO | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-contact">{{ getActivityContact(activity) }}</p>
+                      </ion-card-content>
+                    </div>
+                  </div>
+                </div>
+              </ion-card>
+            </div>
+          </ion-list>
+        </ion-col>
+
+
+
+
+
+
+        <ion-col col-12 col-sm>
+          <ion-list class="inner-list">
+            <ion-list-header color="gris01" class="inner-list-header" (click)="weekdayPressed(3)" [class.opened]="wednesdayOpened">
+              {{calendarWebProvider.CurrentWeek.Wednesday.getDay()}} - {{ 'Wednes' | translate | uppercase }}
+              <span class="contacts-number">\({{calendarWebProvider.CurrentWeek.Wednesday.getTotalActivities()}}\)</span>
+              <ion-icon name="ios-arrow-down" class="phoneButtons arrow" *ngIf="!wednesdayOpened"></ion-icon>
+              <ion-icon name="ios-arrow-up" class="phoneButtons arrow" *ngIf="wednesdayOpened"></ion-icon>
+              <ion-icon name="ios-keypad-outline" class="ipadButtonsKeypad arrow"></ion-icon>
+            </ion-list-header>
+            <div *ngIf="wednesdayOpened">
+              <ion-card class="activity-card" no-padding no-margin *ngFor="let activity of calendarWebProvider.CurrentWeek.Wednesday.Activities; let i = index">
+                <div [ngClass]="activity.STATE == 0 ? 'wrapper-color-state-open' : activity.STATE == 1 ? 'wrapper-color-state-close' : 'wrapper-color-state-danger'"
+                  [class.repeated]="calendarWebProvider.isActivityRepeatedWeek(activity,3)">
+                  <div class="background-card">
+                    <div tappable (click)="loadActivity(activity.ACTIVITY_GUID)">
+                      <ion-card-content>
+                        <p class="activity-title">{{ activity.DESCRIPTION }}</p>
+                        <p class="activity-operation">{{ getEvento(activity.OPERATION) | translate}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_FROM | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_TO | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-contact">{{ getActivityContact(activity) }}</p>
+                      </ion-card-content>
+                    </div>
+                  </div>
+                </div>
+              </ion-card>
+            </div>
+          </ion-list>
+        </ion-col>
+
+
+
+
+
+
+        <ion-col col-12 col-sm>
+          <ion-list class="inner-list">
+            <ion-list-header color="gris01" class="inner-list-header" (click)="weekdayPressed(4)" [class.opened]="thursdayOpened">
+              {{calendarWebProvider.CurrentWeek.Thursday.getDay()}} - {{ 'Thursday' | translate | uppercase }}
+              <span class="contacts-number">\({{calendarWebProvider.CurrentWeek.Thursday.getTotalActivities()}}\)</span>
+              <ion-icon name="ios-arrow-down" class="phoneButtons arrow" *ngIf="!thursdayOpened"></ion-icon>
+              <ion-icon name="ios-arrow-up" class="phoneButtons arrow" *ngIf="thursdayOpened"></ion-icon>
+              <ion-icon name="ios-keypad-outline" class="ipadButtonsKeypad arrow"></ion-icon>
+            </ion-list-header>
+            <div *ngIf="thursdayOpened">
+              <ion-card class="activity-card" no-padding no-margin *ngFor="let activity of calendarWebProvider.CurrentWeek.Thursday.Activities; let i = index">
+                <div [ngClass]="activity.STATE == 0 ? 'wrapper-color-state-open' : activity.STATE == 1 ? 'wrapper-color-state-close' : 'wrapper-color-state-danger'"
+                  [class.repeated]="calendarWebProvider.isActivityRepeatedWeek(activity,4)">
+                  <div class="background-card">
+                    <div tappable (click)="loadActivity(activity.ACTIVITY_GUID)">
+                      <ion-card-content>
+                        <p class="activity-title">{{ activity.DESCRIPTION }}</p>
+                        <p class="activity-operation">{{ getEvento(activity.OPERATION) | translate}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_FROM | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_TO | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-contact">{{ getActivityContact(activity) }}</p>
+                      </ion-card-content>
+                    </div>
+                  </div>
+                </div>
+              </ion-card>
+            </div>
+          </ion-list>
+        </ion-col>
+
+
+
+
+
+
+        <ion-col col-12 col-sm>
+          <ion-list class="inner-list">
+            <ion-list-header color="gris01" class="inner-list-header" (click)="weekdayPressed(5)" [class.opened]="fridayOpened">
+              {{calendarWebProvider.CurrentWeek.Friday.getDay()}} - {{ 'Friday' | translate | uppercase }}
+              <span class="contacts-number">\({{calendarWebProvider.CurrentWeek.Friday.getTotalActivities()}}\)</span>
+              <ion-icon name="ios-arrow-down" class="phoneButtons arrow" *ngIf="!fridayOpened"></ion-icon>
+              <ion-icon name="ios-arrow-up" class="phoneButtons arrow" *ngIf="fridayOpened"></ion-icon>
+              <ion-icon name="ios-keypad-outline" class="ipadButtonsKeypad arrow"></ion-icon>
+            </ion-list-header>
+            <div *ngIf="fridayOpened">
+              <ion-card class="activity-card" no-padding no-margin *ngFor="let activity of calendarWebProvider.CurrentWeek.Friday.Activities; let i = index">
+                <div [ngClass]="activity.STATE == 0 ? 'wrapper-color-state-open' : activity.STATE == 1 ? 'wrapper-color-state-close' : 'wrapper-color-state-danger'"
+                  [class.repeated]="calendarWebProvider.isActivityRepeatedWeek(activity,5)">
+                  <div class="background-card">
+                    <div tappable (click)="loadActivity(activity.ACTIVITY_GUID)">
+                      <ion-card-content>
+                        <p class="activity-title">{{ activity.DESCRIPTION }}</p>
+                        <p class="activity-operation">{{ getEvento(activity.OPERATION) | translate}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_FROM | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-date">{{ activity.DATETIME_TO | date: 'dd/MM/yyyy HH:mm'}}</p>
+                        <p class="activity-contact">{{ getActivityContact(activity) }}</p>
+                      </ion-card-content>
+                    </div>
+                  </div>
+                </div>
+              </ion-card>
+            </div>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+  </div>
+
+
+
+
+  <div class="wrapper" *ngIf="!loadingActivities && isDayView" (swipeleft)="calendarWebProvider.moveToNextDay()" (swiperight)="calendarWebProvider.moveToPreviousDay()">
+
+    <ion-list class="outer-list">
+      <ion-list-header no-margin color="gris" class="outer-list-header">
+        <ion-icon name="ios-arrow-back" class="outer-arrow" (click)="calendarWebProvider.moveToPreviousDay()"></ion-icon>
+        {{ calendarWebProvider.getCurrentDay().getWeekShortString() | translate }}, {{ calendarWebProvider.getCurrentDay().getDay() }}
+        - {{ calendarWebProvider.getCurrentDay().getMonthShortString() | translate}} - {{ calendarWebProvider.getCurrentDay().getYear()
+        }}
+        <span class="contacts-number">\({{calendarWebProvider.getCurrentDay().getTotalActivities()}}\)</span>
+        <ion-icon name="ios-arrow-forward" class="outer-arrow" (click)="calendarWebProvider.moveToNextDay()"></ion-icon>
+      </ion-list-header>
+
+      <div *ngIf="!calendarWebProvider.dayActivitiesLoaded" class="spinner-container">
+        <ion-spinner name="ios"></ion-spinner>
+        <p id="spinner-animated-text">{{ 'PreparingActivitiesList' | translate }}</p>
+      </div>
+
+      <ion-row *ngIf="calendarWebProvider.dayActivitiesLoaded">
+        <ion-card class="activity-card" no-padding no-margin *ngFor="let activity of calendarWebProvider.getCurrentDay().Activities; let i = index"
+          col-6 col-sm-3>
+          <div [ngClass]="activity.STATE == 0 ? 'wrapper-color-state-open' : activity.STATE == 1 ? 'wrapper-color-state-close' : 'wrapper-color-state-danger'"
+            [class.repeated]="calendarWebProvider.isActivityRepeated(activity)">
+            <div class="background-card">
+              <div tappable (click)="loadActivity(activity.ACTIVITY_GUID)">
+                <ion-card-content>
+                  <p class="activity-title">{{ activity.DESCRIPTION }}</p>
+                  <p class="activity-operation">{{ getEvento(activity.OPERATION) | translate}}</p>
+                  <p class="activity-date">{{ activity.DATETIME_FROM | date: 'dd/MM/yyyy HH:mm'}}</p>
+                  <p class="activity-date">{{ activity.DATETIME_TO | date: 'dd/MM/yyyy HH:mm'}}</p>
+                  <p class="activity-contact">{{ getActivityContact(activity) }}</p>
+                </ion-card-content>
+              </div>
+            </div>
+          </div>
+        </ion-card>
+      </ion-row>
+    </ion-list>
+  </div>
+
+
+
+
+
+
+  <div class="wrapper" *ngIf="!loadingActivities && isMonthView" (swipeleft)="calendarWebProvider.moveToNextMonth()" (swiperight)="calendarWebProvider.moveToPreviousMonth()">
+
+
+    <ion-list class="outer-list">
+      <ion-list-header no-margin color="gris" class="outer-list-header">
+        <ion-icon name="ios-arrow-back" class="outer-arrow" (click)="calendarWebProvider.moveToPreviousMonth()"></ion-icon>
+        {{ calendarWebProvider.getCurrentDay().getMonthString() | translate}} {{ calendarWebProvider.getCurrentDay().getYear() }}
+        <span class="contacts-number">\({{calendarWebProvider.CurrentMonth.getTotalActivities()}}\)</span>
+        <ion-icon name="ios-arrow-forward" class="outer-arrow" (click)="calendarWebProvider.moveToNextMonth()"></ion-icon>
+      </ion-list-header>
+
+      <div *ngIf="!calendarWebProvider.monthActivitiesLoaded" class="spinner-container">
+        <ion-spinner name="ios"></ion-spinner>
+        <p id="spinner-animated-text">{{ 'PreparingActivitiesList' | translate }}</p>
+      </div>
+
+      <div class="month-container" *ngIf="calendarWebProvider.monthActivitiesLoaded">
+        <ion-row *ngFor="let week of calendarWebProvider.CurrentMonth.Weeks; let i = index;">
+          <ion-col class="month-day" col-12 col-sm *ngIf="calendarWebProvider.isInMonth(i,1)" (click)="switchToDay(week.Monday)">
+            <div>
+              <p class="day-number">{{ week.Monday.getDay() }}</p>
+              <p class="weekday">{{ week.Monday.getWeekString() | translate | uppercase }}</p>
+              <div class="day-activities">
+                <div class="closed-activity" *ngIf="week.Monday.getClosedActivities() != 0">
+                  <ion-icon class="closed-activity-icon" name="ios-lock-outline"></ion-icon>
+                  <span class="closed-activity-number">\({{ week.Monday.getClosedActivities() }}\)</span>
+                </div>
+                <div class="opened-activity" *ngIf="week.Monday.getOpenedActivities() != 0">
+                  <ion-icon class="opened-activity-icon" name="ios-unlock-outline"></ion-icon>
+                  <span class="opened-activity-number">\({{ week.Monday.getOpenedActivities() }}\)</span>
+                </div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col class="ipadButtons month-no-day" col-12 col-sm *ngIf="!calendarWebProvider.isInMonth(i,1)">
+            <div>
+            </div>
+          </ion-col>
+          <ion-col class="month-day" col-12 col-sm *ngIf="calendarWebProvider.isInMonth(i,2)" (click)="switchToDay(week.Tuesday)">
+            <div>
+              <p class="day-number">{{ week.Tuesday.getDay() }}</p>
+              <p class="weekday">{{ week.Tuesday.getWeekString() | translate | uppercase }}</p>
+              <div class="day-activities">
+                <div class="closed-activity" *ngIf="week.Tuesday.getClosedActivities() != 0">
+                  <ion-icon class="closed-activity-icon" name="ios-lock-outline"></ion-icon>
+                  <span class="closed-activity-number">\({{ week.Tuesday.getClosedActivities() }}\)</span>
+                </div>
+                <div class="opened-activity" *ngIf="week.Tuesday.getOpenedActivities() != 0">
+                  <ion-icon class="opened-activity-icon" name="ios-unlock-outline"></ion-icon>
+                  <span class="opened-activity-number">\({{ week.Tuesday.getOpenedActivities() }}\)</span>
+                </div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col class="ipadButtons month-no-day" col-12 col-sm *ngIf="!calendarWebProvider.isInMonth(i,2)">
+            <div>
+            </div>
+          </ion-col>
+          <ion-col class="month-day" col-12 col-sm *ngIf="calendarWebProvider.isInMonth(i,3)" (click)="switchToDay(week.Wednesday)">
+            <div>
+              <p class="day-number">{{ week.Wednesday.getDay() }}</p>
+              <p class="weekday">{{ week.Wednesday.getWeekString() | translate | uppercase }}</p>
+              <div class="day-activities">
+                <div class="closed-activity" *ngIf="week.Wednesday.getClosedActivities() != 0">
+                  <ion-icon class="closed-activity-icon" name="ios-lock-outline"></ion-icon>
+                  <span class="closed-activity-number">\({{ week.Wednesday.getClosedActivities() }}\)</span>
+                </div>
+                <div class="opened-activity" *ngIf="week.Wednesday.getOpenedActivities() != 0">
+                  <ion-icon class="opened-activity-icon" name="ios-unlock-outline"></ion-icon>
+                  <span class="opened-activity-number">\({{ week.Wednesday.getOpenedActivities() }}\)</span>
+                </div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col class="ipadButtons month-no-day" col-12 col-sm *ngIf="!calendarWebProvider.isInMonth(i,3)">
+            <div>
+            </div>
+          </ion-col>
+          <ion-col class="month-day" col-12 col-sm *ngIf="calendarWebProvider.isInMonth(i,4)" (click)="switchToDay(week.Thursday)">
+            <div>
+              <p class="day-number">{{ week.Thursday.getDay() }}</p>
+              <p class="weekday">{{ week.Thursday.getWeekString() | translate | uppercase }}</p>
+              <div class="day-activities">
+                <div class="closed-activity" *ngIf="week.Thursday.getClosedActivities() != 0">
+                  <ion-icon class="closed-activity-icon" name="ios-lock-outline"></ion-icon>
+                  <span class="closed-activity-number">\({{ week.Thursday.getClosedActivities() }}\)</span>
+                </div>
+                <div class="opened-activity" *ngIf="week.Thursday.getOpenedActivities() != 0">
+                  <ion-icon class="opened-activity-icon" name="ios-unlock-outline"></ion-icon>
+                  <span class="opened-activity-number">\({{ week.Thursday.getOpenedActivities() }}\)</span>
+                </div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col class="ipadButtons month-no-day" col-12 col-sm *ngIf="!calendarWebProvider.isInMonth(i,4)">
+            <div>
+            </div>
+          </ion-col>
+          <ion-col class="month-day" col-12 col-sm *ngIf="calendarWebProvider.isInMonth(i,5)" (click)="switchToDay(week.Friday)">
+            <div>
+              <p class="day-number">{{ week.Friday.getDay() }}</p>
+              <p class="weekday">{{ week.Friday.getWeekString() | translate | uppercase }}</p>
+              <div class="day-activities">
+                <div class="closed-activity" *ngIf="week.Friday.getClosedActivities() != 0">
+                  <ion-icon class="closed-activity-icon" name="ios-lock-outline"></ion-icon>
+                  <span class="closed-activity-number">\({{ week.Friday.getClosedActivities() }}\)</span>
+                </div>
+                <div class="opened-activity" *ngIf="week.Friday.getOpenedActivities() != 0">
+                  <ion-icon class="opened-activity-icon" name="ios-unlock-outline"></ion-icon>
+                  <span class="opened-activity-number">\({{ week.Friday.getOpenedActivities() }}\)</span>
+                </div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col class="ipadButtons month-no-day" col-12 col-sm *ngIf="!calendarWebProvider.isInMonth(i,5)">
+            <div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </div>
+
+
+    </ion-list>
+  </div>
+
+
+  <ion-fab bottom right>
+    <button clear ion-fab (click)="loadNewActivity()" mini>
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>

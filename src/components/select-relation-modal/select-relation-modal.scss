@@ -1,0 +1,70 @@
+select-relation-modal {
+
+    .list-ios > .item-block:first-child{
+        border-top: 0px;
+        }
+
+    ion-list{
+          margin: 0px;
+
+          ion-input{
+            font-family: "Roboto-Medium";
+            color:black;
+          }
+
+          .partnersDisabled {
+            opacity: 0.6;
+          }
+
+          .arrow-button{
+            background-color: transparent;
+            font-size: 16px;
+            position: relative;
+            bottom: -15px;
+            right: -10px;
+            color: $gris;
+          }
+
+          .select-arrow-button{
+            background-color: transparent;
+            font-size: 22px;
+            position: relative;
+            bottom: -13px;
+            right: -14px;
+            color: $gris;
+          }
+
+          .spinner-relations {
+            background-color: transparent;
+            font-size: 22px;
+            position: relative;
+            bottom: -16px;
+            right: -19px;
+            color: $gris;
+            text-align: center;
+            
+            ion-spinner * {
+              width: 22px;
+              height: 22px;
+              stroke: #444;
+              fill: #222;
+            }
+          }
+
+          .trash-button{
+            background-color: transparent;
+            font-size: 24px;
+            position: relative;
+            bottom: 0px;
+            right: -10px;
+            color: $gris;
+          }
+
+          .add-button{
+            background-color: transparent;
+            font-size: 24px;
+            color: $gris;
+          }
+        }
+    
+}
